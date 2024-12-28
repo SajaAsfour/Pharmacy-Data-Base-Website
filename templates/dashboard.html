@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/css/dashboard_style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <ul>
+            <li>Dashboard</li>
+            <li>Medicine</li>
+            <li>Users</li>
+            <li>Purchase</li>
+            <li>Orders</li>
+            <li>Sales</li>
+            <li>Reports</li>
+            <li><a href="/"  class="logout-link">LogOut</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="cards">
+            <div class="card blue">Quantity of today sales<br><span><h1>{{ Quantity_of_sales }}</h1></span></div>
+            <div class="card teal">Totals sales for today ₪<br><span><h1>{{ TotalRevenue }}</h1></span></div>
+            <div class="card orange">Profit of the day ₪<br><span><h1>{{ TotalRevenueInDay }}</h1></span></div>
+            <div class="card purple">Value of stock ₪<br><span><h1>{{ TotalStockValue }}</h1></span></div>
+            <div class="card pink">Orders Price of today ₪<br><span><h1>{{ TotalOrderPrice }}</h1></span></div>
+            <div class="card magenta">Total Customer<br><span><h1>{{ total_customers }}</h1></span></div>
+            <div class="card violet">Total Orders of today<br><span><h1>{{ NumnerofOrder }}</h1></span></div>
+            <div class="card cyan">Total Pharmacist<br><span><h1>{{ total_pharmacist }}</h1></span></div>
+             
+        </div>
+        <div class="tables">
+            <div class="table sales">
+                <h3>Today's Sale </h3>
+                <table>
+                    <tr><th>Pharmacist Name</th><th>Customer Name</th><th>Amount ₪</th><th>Payment Method</th></tr>
+                    {% for sale in sales %}
+                    <tr>
+                        <td>{{ sale[0] }}</td>
+                        <td>{{ sale[1] }}</td>
+                        <td>{{ sale[2] }}</td>
+                        <td>{{ sale[3] }}</td>
+                        <td>{{ sale[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="table expenses">
+                <h3>Today's Orders</h3>
+                <table>
+                    <tr><th>Product Name</th><th>Quantity</th><th> Total Price ₪</th></tr>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order[0] }}</td>
+                        <td>{{ order[1] }}</td>
+                        <td>{{ order[2] }}</td>
+                        <td>{{ order[3] }}</td>
+                        <td>{{ order[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="table report">
+                <h3>Today's Report</h3>
+                <table>
+                    <tr><th>Expense ₪</th><th>Purchase ₪</th><th>Profit ₪</th></tr>
+                    <tr><td>{{TotalOrderPrice}}</td><td>{{ TotalRevenue }}</td><td>{{ TotalRevenueInDay }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

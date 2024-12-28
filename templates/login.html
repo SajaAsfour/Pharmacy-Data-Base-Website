@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmastic Login</title>
+    <link rel="stylesheet" href="/static/css/login_style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="overlay"></div>
+        </div>
+        <div class="right-panel">
+            <h1>Welcome To Aseem Pharmacy</h1>
+            <p>Log in to your account to continue</p>
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username"  required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password"  required>
+                </div>
+                <button type="submit" class="login-btn">Log In</button>
+            </form>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=100089942449642">Facebook</a>
+                <a href="https://www.instagram.com/asem2pharmacy/?hl=en">Instagram</a>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>
