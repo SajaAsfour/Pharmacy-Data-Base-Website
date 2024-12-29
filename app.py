@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 import mysql.connector
 from datetime import datetime
 
@@ -15,10 +15,6 @@ def get_db_connection():
         database='PharmacyManagement'
     )
     return connection
-
-@app.route('/')
-def home():
-    return render_template('login.html')  # Render the login page
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -303,6 +299,42 @@ def dashboard():
 
     return render_template('dashboard.html',sales=sales,orders=orders ,NumnerofOrder=NumnerofOrder,TotalOrderPrice=TotalOrderPrice,TotalStockValue=TotalStockValue,total_customers=total_customers ,total_pharmacist=total_pharmacist,Quantity_of_sales=Quantity_of_sales,TotalRevenue=TotalRevenue,TotalRevenueInDay=TotalRevenueInDay)
     
+@app.route('/medicien')
+def  medicien():
+        # Establish database connection
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("select  p.name , p.Price , p.ExpirationDate,p.ProductType,i.Quantity from product p , inventory i where p.ProductID = i.ProductID order by i.Quantity ") 
+    rows = cursor.fetchall()
+        # Close connection
+    cursor.close()
+    connection.close()
+    return render_template('medicen.html', rows=rows)
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_product():
+    if request.method == 'POST':
+        name = request.form['name']
+        Price = request.form['Price']
+        ExpirationDate = request.form['ExpirationDate']
+        ProductType = request.form['ProductType']
+        Description = request.form['Description']
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO Product (Name, Price, ExpirationDate, ProductType, Description) VALUES (%s, %s, %s, %s, %s)', 
+                       (name, Price, ExpirationDate, ProductType, Description))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('medicien'))
+    return render_template('add_product.html')
+
+
+@app.route('/')
+def home():
+    return render_template('login.html')  # Render the login page
 
 if __name__ == '__main__':
     app.run(debug=True)

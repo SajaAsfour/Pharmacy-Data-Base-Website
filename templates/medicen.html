@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Inventory</title>
+    <link rel="stylesheet" href="/static/css/medicen_style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Product Inventory</h1>
+
+        <a href="/add">Add New Product</a>
+
+        <!-- Table displaying records -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Expiration Date</th>
+                        <th>Product Type</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    {% for row in rows %}
+                    <tr>
+                        <td class="dynamic-data">{{ row.name }}</td>
+                        <td class="dynamic-data">{{ row.Price }}</td>
+                        <td class="dynamic-data">{{ row.ExpirationDate }}</td>
+                        <td class="dynamic-data">{{ row.ProductType }}</td>
+                        <td class="dynamic-data">{{ row.Quantity }}</td>
+                        <td>
+                            <!-- Add action buttons for edit/delete -->
+                            <button class="edit-btn" data-id="{{ row.id }}">Edit</button>
+                            <button class="delete-btn" data-id="{{ row.id }}">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

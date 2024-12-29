@@ -151,12 +151,25 @@ header {
     border-bottom: none;
 }
 
-.logout-link {
+.link {
     color: white;
     text-decoration: none;
 }
 
-.logout-link:hover {
+.link:hover {
     color: lightgray;
 }
 
+@keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  .card {
+    animation: bounce 2s infinite;
+  }
+  

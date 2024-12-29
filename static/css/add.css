@@ -1,0 +1,91 @@
+/*
+    Saja Asfour 1210737
+    Fatima Dawabsheh 1210827
+    Shahd Shreteh 1210444
+
+*/
+
+body {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('b2.jpg');
+    /* Ensures the image covers the entire screen */
+    background-size: cover;
+    /* Centers the image */ 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    height: 100vh; 
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    font-size: 30px;
+    color: #75d5ca;
+    /* Adds space between the heading and the top */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Form Container */
+form {
+    background-color: #f4f8f5;
+    border: 1px solid #d7edea;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px #f6f8f8;
+    padding: 20px;
+    width: 300px;
+}
+
+/* Labels */
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555555;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+input[type="date"] {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d9e6;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Submit Button */
+input[type="submit"] {
+    background-color: #75d5ca;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+}
+
+input[type="submit"]:hover {
+    background-color: #d7edea;
+}
+
+/* Responsive Design */
+@media (max-width: 400px) {
+    form {
+        width: 90%;
+    }
+}
+
+.form-group {
+    margin-bottom: 30px;
+    border-radius: 30px;
+    
+}
