@@ -1,1 +1,1 @@
-total_pharmacist
+/medicien

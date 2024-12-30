@@ -114,7 +114,7 @@ def dashboard():
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        cursor.execute("select SUM(p.Price * i.Quantity) AS TotalStockValue  FROM Product p , inventory i where p.productID = i.ProductID") 
+        cursor.execute("select SUM(p.Price * p.Quantity) AS TotalStockValue  FROM Product p") 
         TotalStockValue = cursor.fetchone()[0]
 
         # Close connection
@@ -300,17 +300,21 @@ def dashboard():
     return render_template('dashboard.html',sales=sales,orders=orders ,NumnerofOrder=NumnerofOrder,TotalOrderPrice=TotalOrderPrice,TotalStockValue=TotalStockValue,total_customers=total_customers ,total_pharmacist=total_pharmacist,Quantity_of_sales=Quantity_of_sales,TotalRevenue=TotalRevenue,TotalRevenueInDay=TotalRevenueInDay)
     
 @app.route('/medicien')
-def  medicien():
+def medicien():
         # Establish database connection
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    cursor.execute("select  p.name , p.Price , p.ExpirationDate,p.ProductType,i.Quantity from product p , inventory i where p.ProductID = i.ProductID order by i.Quantity ") 
+    cursor.execute("select p.name , p.Price , p.ExpirationDate,p.ProductType,p.Quantity,p.LastUpdatedDate from product p order by p.Quantity ") 
     rows = cursor.fetchall()
+
+    # Fetch products with low stock (Quantity <= 5)
+    cursor.execute("SELECT p.name FROM product p WHERE p.Quantity <= 5")
+    low_stock_products = cursor.fetchall()  # This will return a list of dictionaries
         # Close connection
     cursor.close()
     connection.close()
-    return render_template('medicen.html', rows=rows)
+    return render_template('medicen.html', rows=rows, low_stock_products=low_stock_products)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_product():
@@ -320,17 +324,76 @@ def add_product():
         ExpirationDate = request.form['ExpirationDate']
         ProductType = request.form['ProductType']
         Description = request.form['Description']
-        
+        LastUpdatedDate = datetime.now().strftime("%Y-%m-%d")
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO Product (Name, Price, ExpirationDate, ProductType, Description) VALUES (%s, %s, %s, %s, %s)', 
-                       (name, Price, ExpirationDate, ProductType, Description))
+        cursor.execute('INSERT INTO Product (Name, Price, ExpirationDate, ProductType, Description,LastUpdatedDate) VALUES (%s, %s, %s, %s, %s,%s)', 
+                       (name, Price, ExpirationDate, ProductType, Description,LastUpdatedDate))
         conn.commit()
         conn.close()
 
         return redirect(url_for('medicien'))
     return render_template('add_product.html')
 
+@app.route('/edit_product/<string:name>', methods=['GET', 'POST'])
+def edit_product(name):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Fetch the product by name
+    print(f"Fetching product with name: {name}")
+    cursor.execute('SELECT * FROM Product WHERE name = %s', (name,))
+    product = cursor.fetchone()
+
+    if not product:
+        conn.close()
+        print("Product not found!")
+        return redirect(url_for('medicien'))
+
+    if request.method == 'POST':
+        print("Form submitted!")
+        new_name = request.form['name']
+        Price = request.form['Price']
+        ExpirationDate = request.form['ExpirationDate']
+        ProductType = request.form['ProductType']
+        Description = request.form['Description']
+        LastUpdatedDate = datetime.now().strftime("%Y-%m-%d")
+        Quantity=request.form['Quantity']
+        # Update the product
+        print(f"Updating product: {name}")
+        cursor.execute('''
+            UPDATE Product 
+            SET name = %s, Price = %s, ProductType = %s, ExpirationDate = %s, LastUpdatedDate = %s, Description = %s,Quantity= %s
+            WHERE name = %s
+        ''', (new_name, Price, ProductType, ExpirationDate, LastUpdatedDate, Description,Quantity, name))
+        conn.commit()
+        conn.close()
+        print("Product updated successfully!")
+        return redirect(url_for('medicien'))
+
+    conn.close()
+    return render_template('edit_product.html', product=product)
+
+
+@app.route('/delete_product/<string:name>', methods=['GET', 'POST'])
+def delete_product(name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM product WHERE Name = %s', (name,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('medicien'))
+
+@app.route("/users")
+def users():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("select Name , ContactInfo,Role,Wage from pharmacist ") 
+    rows = cursor.fetchall()
+    # Close connection
+    cursor.close()
+    connection.close()
+    return render_template('users.html', rows=rows)
 
 @app.route('/')
 def home():

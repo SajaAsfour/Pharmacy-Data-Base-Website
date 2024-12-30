@@ -1,3 +1,4 @@
+/* General Body Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,6 +7,44 @@ body {
     color: #333;
 }
 
+/* Sidebar Styles */
+.sidebar {
+    width: 200px;
+    background-color: #ff8aa8;
+    padding: 20px 0;
+    color: white;
+    height: 100vh;
+    position: fixed; /* Fix the sidebar to the left */
+    top: 0;
+    left: 0;
+    z-index: 2; /* Ensure it's above the content */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 15px;
+    cursor: pointer;
+}
+
+.sidebar li:hover {
+    background-color: #ff6f91;
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: lightgray;
+}
+
+/* Container Styles */
 .container {
     max-width: 1200px;
     margin: 50px auto;
@@ -13,39 +52,148 @@ body {
     background: #fff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    margin-left: 220px; /* Add left margin to avoid overlapping the sidebar */
+    position: relative;
 }
 
+/* Heading Styles */
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #444;
+    color: rgb(156, 9, 102);
 }
 
+/* Table Styles */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    background-color: #ffe1e9; /* Light pink background for the table */
+    border: 1px solid #ff8aa8;
 }
 
 th, td {
     text-align: left;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ff8aa8; /* Pink border for table cells */
 }
 
 th {
-    background-color: #007bff;
-    color: white;
+    background-color: #ff8aa8; /* Match the sidebar color for the header */
+    color: white; /* White text for contrast */
 }
 
 td.dynamic-data {
-    color: #391076; /* Updated text color for table data coming from query */
+    color: rgb(156, 9, 102); /* Updated text color for table data */
 }
 
 tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #ffc1d1; /* Lighter pink for alternating rows */
+}
+
+tr:nth-child(odd) {
+    background-color: #ffe1e9; /* Slightly darker pink for other rows */
 }
 
 tr:hover {
-    background-color: #f1f1f1;
+    background-color: #ff6f91; /* Sidebar hover color for hover effect */
 }
+
+
+.addBox {
+    font-family: 'Times New Roman', Times, serif;
+    padding: 10px 10px;
+    border: 1px solid #ff6f91;
+    border-radius: 5px;
+    background-color: #ff6f91;
+    color: white;
+    text-decoration: none;
+}
+
+.addBox  :hover {
+    text-decoration: underline;
+}
+
+/* General Button Styles */
+button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Edit Button */
+.edit-btn {
+    display: inline-block; /* Ensures buttons are inline */
+    margin-right: 10px; /* Adds space between buttons */
+    background-color: rgb(156, 9, 102); /* Purple background */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.delete-btn {
+    display: inline-block; /* Ensures buttons are inline */
+    margin-right: 10px; /* Adds space between buttons */
+    background-color: rgb(156, 9, 102); /* Purple background */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover Effect for Buttons */
+a.edit-btn:hover,
+a.delete-btn:hover {
+    background-color: rgb(130, 7, 85); /* Darker shade on hover */
+}
+
+/* Keyframe Animation for Sliding Effect */
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Apply Animation to Table Rows */
+.animated-row {
+    animation: slideInFromLeft 0.8s ease-in-out;
+}
+
+/* Add a slight delay for each row to make the effect staggered */
+.animated-row:nth-child(odd) {
+    animation-delay: 0.2s;
+}
+
+.animated-row:nth-child(even) {
+    animation-delay: 0.4s;
+}
+
+.top-right-box {
+    position: absolute;
+    top: 0px; 
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency */
+    border: 2px solid #ff6f91; /* Matches theme color */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    text-align: center;
+    color: #333;
+    z-index: 1; /* Ensures it's above the background but below the header */
+}
+
+

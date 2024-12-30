@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -20,6 +21,7 @@ body {
     background: white;
 }
 
+/* Left Panel */
 .left-panel {
     flex: 1;
     background: url('/static/login_background.jpg') no-repeat center center/cover;
@@ -35,6 +37,7 @@ body {
     background: rgba(0, 0, 0, 0.5);
 }
 
+/* Right Panel */
 .right-panel {
     flex: 1;
     padding: 40px 30px;
@@ -56,6 +59,7 @@ body {
     color: #777;
 }
 
+/* Form Styles */
 .form-group {
     margin-bottom: 15px;
 }
@@ -75,6 +79,7 @@ body {
     font-size: 14px;
 }
 
+/* Button Styles */
 .login-btn {
     width: 100%;
     padding: 10px;
@@ -91,6 +96,7 @@ body {
     background: #219e7a;
 }
 
+/* Social Links */
 .social-links {
     margin-top: 20px;
     text-align: center;
@@ -108,9 +114,57 @@ body {
     color: #2ebf91;
 }
 
+/* Footer */
 .footer {
     margin-top: 15px;
     text-align: center;
     color: #aaa;
     font-size: 12px;
+}
+
+/* Animations */
+@keyframes slideInLeft {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Adding animation to elements */
+.left-panel {
+    animation: slideInLeft 1s ease-out forwards;
+}
+
+.overlay {
+    animation: fadeIn 1s ease-in forwards;
+}
+
+.right-panel h1,
+.right-panel p,
+.form-group,
+.login-btn,
+.social-links {
+    animation: fadeInUp 1.5s ease-out forwards;
 }

@@ -1,14 +1,8 @@
-<!--
-    Saja Asfour 1210737
-    Fatima Dawabsheh 1210827
-    Shahd Shreteh 1210444
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Product</title>
+    <title>Edit Product</title>
     <link rel="stylesheet" href="/static/css/add.css">
     <style>
         /* Animation for fade-in effect */
@@ -35,26 +29,31 @@
     </style>
 </head>
 <body>
-    <h1>Add New Product</h1>
+    <h1>Edit The Product</h1>
     
     <div class="left-aligned">
-        <form action="{{ url_for('add_product') }}" method="POST">
+        <form action="{{ url_for('edit_product', name=product.Name if product.Name else '') }}" method="POST">
+
             <label for="name">Name:</label>
-            <input type="text" name="name" required><br>
+            <input type="text" name="name" value="{{ product.Name }}" required><br>
 
             <label for="Price">Price:</label>
-            <input type="text" name="Price"><br>
+            <input type="text" name="Price" value="{{ product.Price }}"><br>
 
             <label for="ProductType">Product Type:</label>
-            <input type="text" name="ProductType"><br>
+            <input type="text" name="ProductType" value="{{ product.ProductType }}"><br>
             
             <label for="ExpirationDate">Expiration Date:</label>
-            <input type="date" name="ExpirationDate"><br>
+            <input type="date" name="ExpirationDate" value="{{ product.ExpirationDate }}"><br>
 
             <label for="Description">Description:</label>
-            <input type="text" name="Description"><br>
+            <input type="text" name="Description" value="{{ product.Description }}"><br>
 
-            <input type="submit" value="Add Product">
+            
+            <label for="Quantity">Quantity:</label>
+            <input type="text" name="Quantity" value="{{ product.Quantity }}"><br>
+
+            <input type="submit" value="Update Product">
         </form>
     </div>
 </body>

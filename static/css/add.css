@@ -2,33 +2,29 @@
     Saja Asfour 1210737
     Fatima Dawabsheh 1210827
     Shahd Shreteh 1210444
-
 */
 
 body {
     display: flex;
     flex-direction: column; 
-    align-items: center;
+    align-items: flex-start; /* Aligns content to the left */
     font-family: 'Times New Roman', Times, serif;
     margin: 0;
-    padding: 0;
-    background-image: url('b2.jpg');
-    /* Ensures the image covers the entire screen */
-    background-size: cover;
-    /* Centers the image */ 
-    background-position: center; 
+    padding: 20px; /* Adds padding for better spacing */
+    background-image: url('/static/b2.jpg');
+    background-size: cover; /* Ensures the image covers the entire screen */
+    background-position: center; /* Centers the image */ 
     background-repeat: no-repeat; 
     height: 100vh; 
 }
 
 /* Heading */
 h1 {
-    text-align: center;
     font-size: 30px;
-    color: #75d5ca;
-    /* Adds space between the heading and the top */
+    color: rgb(156, 9, 102);
     margin-top: 20px;
     margin-bottom: 20px;
+    margin-left: 250px;
 }
 
 /* Form Container */
@@ -39,6 +35,7 @@ form {
     box-shadow: 0 4px 6px #f6f8f8;
     padding: 20px;
     width: 300px;
+    margin-left: 200px; /* Ensures the form stays aligned to the left */
 }
 
 /* Labels */
@@ -51,7 +48,6 @@ label {
 
 /* Inputs */
 input[type="text"],
-input[type="email"],
 input[type="date"] {
     width: calc(100% - 20px);
     padding: 8px;
@@ -63,7 +59,7 @@ input[type="date"] {
 
 /* Submit Button */
 input[type="submit"] {
-    background-color: #75d5ca;
+    background-color: rgb(156, 9, 102);
     color: #ffffff;
     border: none;
     border-radius: 5px;
@@ -74,7 +70,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #d7edea;
+    background-color: #d1d9e6;
 }
 
 /* Responsive Design */
@@ -87,5 +83,4 @@ input[type="submit"]:hover {
 .form-group {
     margin-bottom: 30px;
     border-radius: 30px;
-    
 }
