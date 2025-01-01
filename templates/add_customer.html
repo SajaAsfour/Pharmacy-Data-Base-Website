@@ -1,0 +1,64 @@
+<!--
+    Saja Asfour 1210737
+    Fatima Dawabsheh 1210827
+    Shahd Shreteh 1210444
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Customer</title>
+    <link rel="stylesheet" href="/static/css/add_customer.css">
+    <style>
+        /* Animation for fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply animation to the heading */
+        h1 {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Apply animation to the form */
+        form {
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add New Customer</h1>
+    
+    <div class="left-aligned">
+        <form action="{{ url_for('add_customers') }}" method="POST">
+            <label for="Name ">Name:</label>
+            <input type="text" name="Name"><br>
+
+            <label for="city">city:</label>
+            <input type="text" name="city"><br>
+            
+            <label for="street">street:</label>
+            <input type="text" name="street"><br>
+
+            <label for="DateOfBirth">Date Of Birth:</label>
+            <input type="date" name="DateOfBirth"><br>
+
+            <label for="Email">Email:</label>
+            <input type="email" name="Email"><br>
+
+            <label for="Phonenum">Phone number:</label>
+            <input type="text" name="Phonenum"><br>
+
+            <input type="submit" value="Add Customer">
+        </form>
+    </div>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Inventory</title>
-    <link rel="stylesheet" href="/static/css/medicen_style.css">
+    <title>Customers Information</title>
+    <link rel="stylesheet" href="/static/css/customer.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -22,22 +22,21 @@
         </ul>
     </div>
     <div class="container">
-        <h1>Product Inventory</h1>
+        <h1>Customers Information</h1>
         <div class="top-right-box">
-            {% if low_stock_products %}
-                <p>Attention!! The following products have low stock⚠️</p>
-                <ul>
-                    {% for product in low_stock_products %}
-                        
-                        <li>{{ product.name }}</li>
-                    {% endfor %}
-                </ul>
+            <p>Top Customers This Year<span>🥳🎉</span></p>
+            {% if topCustomer %}
+                <p>
+                    {{ topCustomer.Name }} 
+                    with Total Sales: {{ topCustomer.TotalSales }}
+                </p>
             {% else %}
-                <p>All products are sufficiently stocked!😎</p>
+                <p>No sales data available for this Year.</p>
             {% endif %}
         </div>
 
-        <a href="/add" class="addBox">Add New Product  </a>
+
+        <a href="/add_customers" class="addBox">Add New Customer  </a>
 
         <!-- Table displaying records -->
         <div class="table-container">
@@ -45,27 +44,26 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Price</th>
-                        <th>Expiration Date</th>
-                        <th>Product Type</th>
-                        <th>Quantity</th>
-                        <th>LastUpdatedDate</th>
+                        <th>City</th>
+                        <th>Date Of Birth</th>
+                        <th>Email</th>
+                        <th>Street</th>
+                        <th>Phone Number</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="inventoryTableBody">
                     {% for row in rows %}
                     <tr class="animated-row">
-                        <td class="dynamic-data">{{ row.name }}</td>
-                        <td class="dynamic-data">{{ row.Price }}</td>
-                        <td class="dynamic-data">{{ row.ExpirationDate }}</td>
-                        <td class="dynamic-data">{{ row.ProductType }}</td>
-                        <td class="dynamic-data">{{ row.Quantity }}</td>
-                        <td class="dynamic-data">{{ row.LastUpdatedDate }}</td>
-                        
+                        <td class="dynamic-data">{{ row.Name }}</td>
+                        <td class="dynamic-data">{{ row.city }}</td>
+                        <td class="dynamic-data">{{ row.DateOfBirth }}</td>
+                        <td class="dynamic-data">{{ row.Email }}</td>
+                        <td class="dynamic-data">{{ row.street }}</td>
+                        <td class="dynamic-data">{{ row.Phonenum }}</td>                        
                         <td>
-                            <a class="edit-btn" href="{{ url_for('edit_product', name= row.name) }}">Edit</a>
-                            <a class="delete-btn" href="{{ url_for('delete_product', name= row.name) }}">Delete</a>
+                            <a class="edit-btn" href="{{ url_for('edit_customers', name= row.Name) }}">Edit</a>
+                            <a class="delete-btn" href="{{ url_for('delete_customers', name= row.Name) }}">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}

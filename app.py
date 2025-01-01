@@ -386,15 +386,291 @@ def delete_product(name):
 
 @app.route("/users")
 def users():
+    # Get database connection
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("select Name , ContactInfo,Role,Wage from pharmacist ") 
+
+    # Fetch pharmacist details
+    cursor.execute("SELECT Name, ContactInfo, Role, Wage FROM Pharmacist")
     rows = cursor.fetchall()
+
+    # Calculate the first day of the current month in Python
+    first_day_of_month = datetime.now().replace(month=1, day=1).strftime("%Y-%m-%d")
+
+    # Query to get the top pharmacist by total sales
+    query = """
+        SELECT 
+            p.Name,
+            COUNT(s.SalesID) AS TotalSales
+        FROM 
+            Pharmacist p
+        JOIN 
+            Sales s ON p.PharmacistID = s.PharmacistID
+        WHERE 
+            s.Date >= %s
+        GROUP BY 
+            p.PharmacistID, p.Name
+        ORDER BY 
+            TotalSales DESC
+        LIMIT 1
+    """
+    cursor.execute(query, (first_day_of_month,))
+    topUser = cursor.fetchone()  # Use fetchone() since LIMIT 1 guarantees a single row
+
     # Close connection
     cursor.close()
     connection.close()
-    return render_template('users.html', rows=rows)
 
+    # Render template with the fetched data
+    return render_template('users.html', rows=rows, topUser=topUser)
+
+@app.route('/addusers', methods=['GET', 'POST'])
+def add_users():
+    if request.method == 'POST':
+        Name = request.form['Name']
+        ContactInfo = request.form['ContactInfo']
+        Role = request.form['Role']
+        Username = request.form['Username']
+        Password = request.form['Password']
+        Wage = request.form['Wage']
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO Pharmacist (Name, ContactInfo, Role, Username, Password, Wage) VALUES (%s, %s, %s, %s, %s,%s)', 
+                       (Name, ContactInfo, Role, Username, Password,Wage))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('users'))
+    return render_template('add_users.html')
+@app.route('/edit_users/<string:name>', methods=['GET', 'POST'])
+def edit_users(name):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Fetch the product by name
+    print(f"Fetching product with Name: {name}")
+    cursor.execute('SELECT * FROM pharmacist WHERE Name = %s', (name,))
+    users = cursor.fetchone()
+
+    if not users:
+        conn.close()
+        print("user not found!")
+        return redirect(url_for('users'))
+
+    if request.method == 'POST':
+        print("Form submitted!")
+        new_name = request.form['name']
+        ContactInfo = request.form['ContactInfo']
+        Role = request.form['Role']
+        Wage = request.form['Wage']
+        print(f"Updating user: {name}")
+        cursor.execute('''
+            UPDATE pharmacist 
+            SET Name = %s, ContactInfo = %s, Role = %s, Wage = %s
+            WHERE Name = %s
+        ''', (new_name, ContactInfo, Role, Wage, name))
+        conn.commit()
+        conn.close()
+        print("user updated successfully!")
+        return redirect(url_for('users'))
+
+    conn.close()
+    return render_template('edit_users.html', users=users)
+@app.route('/delete_users/<string:name>', methods=['GET', 'POST'])
+def delete_users(name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM pharmacist WHERE Name = %s', (name,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('users'))
+
+@app.route("/customer")
+def customers():
+    # Get database connection
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # Fetch pharmacist details
+    cursor.execute("SELECT Name, city, street, DateOfBirth, Email, Phonenum FROM customer")
+    rows = cursor.fetchall()
+
+    # Calculate the first day of the current month in Python
+    first_day_of_month = datetime.now().replace(month=1, day=1).strftime("%Y-%m-%d")
+
+    # Query to get the top pharmacist by total sales
+    query = """
+        SELECT 
+            c.Name,
+            COUNT(s.SalesID) AS TotalSales
+        FROM 
+            customer c
+        JOIN 
+            Sales s ON c.CustomerID = s.CustomerID
+        WHERE 
+            s.Date >= %s
+        GROUP BY 
+            c.CustomerID, c.Name
+        ORDER BY 
+            TotalSales DESC
+        LIMIT 1
+    """
+    cursor.execute(query, (first_day_of_month,))
+    topCustomer = cursor.fetchone()  # Use fetchone() since LIMIT 1 guarantees a single row
+
+    # Close connection
+    cursor.close()
+    connection.close()
+
+    # Render template with the fetched data
+    return render_template('customers.html', rows=rows, topCustomer=topCustomer)
+
+@app.route('/add_customers', methods=['GET', 'POST'])
+def add_customers():
+    if request.method == 'POST':
+        Name = request.form['Name']
+        city = request.form['city']
+        street = request.form['street']
+        DateOfBirth = request.form['DateOfBirth']
+        Email = request.form['Email']
+        Phonenum = request.form['Phonenum']
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO customer (Name, city, street, DateOfBirth, Email, Phonenum) VALUES (%s, %s, %s, %s, %s,%s)', 
+                       (Name, city, street, DateOfBirth, Email, Phonenum))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('customers'))
+    return render_template('add_customer.html')
+@app.route('/edit_customers/<string:name>', methods=['GET', 'POST'])
+def edit_customers(name):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Fetch the product by name
+    print(f"Fetching Customer with Name: {name}")
+    cursor.execute('SELECT * FROM customer WHERE Name = %s', (name,))
+    customers = cursor.fetchone()
+
+    if not customers:
+        conn.close()
+        print("customer not found!")
+        return redirect(url_for('customers'))
+
+    if request.method == 'POST':
+        print("Form submitted!")
+        new_name = request.form['name']
+        city = request.form['city']
+        street = request.form['street']
+        DateOfBirth = request.form['DateOfBirth']
+        Email = request.form['Email']
+        Phonenum = request.form['Phonenum']
+        print(f"Updating customer: {name}")
+        cursor.execute('''
+            UPDATE customer 
+            SET Name = %s, city = %s, street = %s, DateOfBirth = %s,Email = %s ,Phonenum=%s
+            WHERE Name = %s
+        ''', (new_name, city, street, DateOfBirth, Email, Phonenum,name))
+        conn.commit()
+        conn.close()
+        print("customers updated successfully!")
+        return redirect(url_for('customers'))
+
+    conn.close()
+    return render_template('edit_customers.html', customers=customers)
+@app.route('/delete_customers/<string:name>', methods=['GET', 'POST'])
+def delete_customers(name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM customer WHERE Name = %s', (name,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('customers'))
+
+@app.route("/orders")
+def orders():
+    # Get database connection
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # Fetch pharmacist details
+    cursor.execute('''
+        select o.OrderID,ph.Name as PharmsticName , p.Name As ProductName, o.OrderDate ,o.Quantity
+        from product p , pharmacist ph , orders o
+        where p.ProductID = o.ProductID and o.PharmacistID = ph.PharmacistID;
+                   ''')
+    rows = cursor.fetchall()
+
+    # Close connection
+    cursor.close()
+    connection.close()
+
+    # Render template with the fetched data
+    return render_template('order.html', rows=rows)
+
+@app.route('/add_orders', methods=['GET', 'POST'])
+def add_orders():
+    if request.method == 'POST':
+        PharmacistID = request.form['PharmacistID']
+        ProductID = request.form['ProductID']
+        OrderDate = datetime.now().strftime("%Y-%m-%d")
+        Quantity = request.form['Quantity']
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO orders (PharmacistID, ProductID, OrderDate, Quantity) VALUES (%s, %s, %s, %s)', 
+                       (PharmacistID, ProductID, OrderDate, Quantity))
+        cursor.execute('''Update product 
+                    set Quantity = Quantity + %s
+                    where productID = %s
+                   ''',(Quantity,ProductID))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('orders'))
+    return render_template('add_order.html')
+@app.route('/edit_orders/<int:id>', methods=['GET', 'POST'])
+def edit_orders(id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Fetch the product by name
+    print(f"Fetching orders with ID: {id}")
+    cursor.execute('select * from orders o WHERE OrderID = %s ', (id,))
+    orders = cursor.fetchone()
+    if not orders:
+        conn.close()
+        print("orders not found!")
+        return redirect(url_for('orders'))
+
+    if request.method == 'POST':
+        print("Form submitted!")
+        PharmacistID = request.form['PharmacistID']
+        ProductID = request.form['ProductID']
+        OrderDate = datetime.now().strftime("%Y-%m-%d")
+        Quantity = request.form['Quantity']
+        print(f"Updating orders: {id}")
+        cursor.execute('''
+            UPDATE orders 
+            SET  PharmacistID = %s, ProductID = %s, OrderDate = %s, Quantity= %s
+            WHERE OrderID = %s
+        ''', (PharmacistID, ProductID, OrderDate, Quantity,id))
+        
+        conn.commit()
+        conn.close()
+        print("orders updated successfully!")
+        return redirect(url_for('orders'))
+
+    conn.close()
+    return render_template('edit_order.html', orders=orders)
+@app.route('/delete_orders/<int:id>', methods=['GET', 'POST'])
+def delete_orders(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM orders WHERE OrderID = %s', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('orders'))
 @app.route('/')
 def home():
     return render_template('login.html')  # Render the login page

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacist Information</title>
-    <link rel="stylesheet" href="/static/css/medicen_style.css">
+    <link rel="stylesheet" href="/static/css/users.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -22,12 +22,21 @@
         </ul>
     </div>
     <div class="container">
-        <h1>Pharmastic Information</h1>
+        <h1>Pharmacist Information</h1>
         <div class="top-right-box">
-            note
+            <p>Top Pharmacist This Year<span>🥳🎉</span></p>
+            {% if topUser %}
+                <p>
+                    {{ topUser.Name }} 
+                    with Total Sales: {{ topUser.TotalSales }}
+                </p>
+            {% else %}
+                <p>No sales data available for this Year.</p>
+            {% endif %}
         </div>
 
-        <a href="/add" class="addBox">Add New Pharmastic  </a>
+
+        <a href="/addusers" class="addBox">Add New Pharmastic  </a>
 
         <!-- Table displaying records -->
         <div class="table-container">
@@ -35,7 +44,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Contact Information</th>
+                        <th>Mobile Number</th>
                         <th>Role</th>
                         <th>Wage</th>
                         <th>Actions</th>
@@ -50,8 +59,8 @@
                         <td class="dynamic-data">{{ row.Wage }}</td>
                         
                         <td>
-                            <a class="edit-btn" href="{{ url_for('edit_user', name= row.name) }}">Edit</a>
-                            <a class="delete-btn" href="{{ url_for('delete_user', name= row.name) }}">Delete</a>
+                            <a class="edit-btn" href="{{ url_for('edit_users', name= row.Name) }}">Edit</a>
+                            <a class="delete-btn" href="{{ url_for('delete_users', name= row.Name) }}">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}

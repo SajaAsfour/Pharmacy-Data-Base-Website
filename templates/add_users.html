@@ -1,0 +1,64 @@
+<!--
+    Saja Asfour 1210737
+    Fatima Dawabsheh 1210827
+    Shahd Shreteh 1210444
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Pharmacist</title>
+    <link rel="stylesheet" href="/static/css/addusers.css">
+    <style>
+        /* Animation for fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply animation to the heading */
+        h1 {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Apply animation to the form */
+        form {
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add New Pharmacist</h1>
+    
+    <div class="left-aligned">
+        <form action="{{ url_for('add_users') }}" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" name="Name" required><br>
+
+            <label for="ContactInfo">Contact Information:</label>
+            <input type="text" name="ContactInfo"><br>
+
+            <label for="Role">Role:</label>
+            <input type="text" name="Role"><br>
+            
+            <label for="Username">Username:</label>
+            <input type="text" name="Username"><br>
+
+            <label for="Password">Password:</label>
+            <input type="text" name="Password"><br>
+
+            <label for="Wage">Wage:</label>
+            <input type="text" name="Wage"><br>
+
+            <input type="submit" value="Add Pharmacist">
+        </form>
+    </div>
+</body>
+</html>

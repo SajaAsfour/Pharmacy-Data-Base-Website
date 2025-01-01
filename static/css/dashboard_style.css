@@ -1,16 +1,20 @@
+/* General Body Styles */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Times New Roman', Times, serif, sans-serif;
     background-color: #f4f4f4;
     display: flex;
+    transition: background-color 0.5s ease; /* Smooth background transition */
 }
 
+/* Sidebar Styles */
 .sidebar {
     width: 200px;
     background-color: #ff8aa8;
     padding: 20px 0;
     color: white;
     height: 100vh;
+    animation: slideIn 0.5s ease-out; /* Sidebar slide-in animation */
 }
 
 .sidebar ul {
@@ -21,15 +25,20 @@ body {
 .sidebar li {
     padding: 15px;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
 }
 
 .sidebar li:hover {
     background-color: #ff6f91;
+    transform: scale(1.05); /* Slight zoom effect on hover */
 }
 
+/* Main Content Styles */
 .main-content {
     flex: 1;
     padding: 20px;
+    opacity: 0;
+    animation: fadeIn 1s forwards; /* Fade-in animation for main content */
 }
 
 header {
@@ -43,6 +52,11 @@ header {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    transition: box-shadow 0.3s ease;
+}
+
+.search-bar input:focus {
+    box-shadow: 0 0 10px rgba(255, 105, 135, 0.5); /* Highlight focus */
 }
 
 .profile img {
@@ -52,6 +66,7 @@ header {
     margin-right: 10px;
 }
 
+/* Card Styles */
 .cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -66,11 +81,17 @@ header {
     text-align: center;
     font-size: 1rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: bounce 2s infinite;
+    transition: transform 0.3s ease-in-out; /* Smooth hover scaling */
+}
+
+.card:hover {
+    transform: scale(1.1); /* Enlarged scale on hover */
 }
 
 .card h1 {
     margin: 0;
-    font-size: 24px; /* Reduced font size */
+    font-size: 24px;
 }
 
 .card span {
@@ -112,6 +133,7 @@ header {
     background-color: #03a9f4;
 }
 
+/* Table Container Styles */
 .tables {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -123,6 +145,11 @@ header {
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+.table:hover {
+    transform: scale(1.05); /* Enlarged scale on hover */
 }
 
 .table h3 {
@@ -140,6 +167,7 @@ header {
 .table th, .table td {
     padding: 10px;
     border-bottom: 1px solid #ccc;
+    transition: background-color 0.3s ease;
 }
 
 .table th {
@@ -147,29 +175,44 @@ header {
     color: #333;
 }
 
-.table tr:last-child td {
-    border-bottom: none;
+.table tr:hover td {
+    background-color: #ffebee; /* Subtle hover row effect */
 }
 
 .link {
     color: white;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .link:hover {
     color: lightgray;
 }
 
+/* Keyframe Animations */
 @keyframes bounce {
     0%, 100% {
-      transform: translateY(0);
+        transform: translateY(0);
     }
     50% {
-      transform: translateY(-10px);
+        transform: translateY(-10px);
     }
-  }
-  
-  .card {
-    animation: bounce 2s infinite;
-  }
-  
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(-200px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

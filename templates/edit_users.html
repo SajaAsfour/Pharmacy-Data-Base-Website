@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Pharmacist Information</title>
+    <link rel="stylesheet" href="/static/css/editusers.css">
+    <style>
+        /* Animation for fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply animation to the heading */
+        h1 {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Apply animation to the form */
+        form {
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Update Pharmacist Information</h1>
+    
+    <div class="left-aligned">
+        <form action="{{ url_for('edit_users', name=users.Name if users.Name else '') }}" method="POST">
+
+            <label for="name">Name:</label>
+            <input type="text" name="name" value="{{ users.Name }}" required><br>
+
+            <label for="ContactInfo">Mobile Number:</label>
+            <input type="text" name="ContactInfo" value="{{ users.ContactInfo }}"><br>
+
+            <label for="Role">Role:</label>
+            <input type="text" name="Role" value="{{ users.Role }}"><br>
+        
+
+            <label for="Wage">Wage:</label>
+            <input type="text" name="Wage" value="{{ users.Wage }}"><br>
+
+            <input type="submit" value="Update Pharmacist">
+        </form>
+    </div>
+</body>
+</html>
