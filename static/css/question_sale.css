@@ -1,0 +1,127 @@
+body {
+    font-family: 'Times New Roman', Times, serif, sans-serif;
+    text-align: center;
+    margin-top: 100px;
+    color: azure;
+    background-image: url("/static/sale.jpg");
+}
+
+.button-container {
+    margin-top: 20px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    color: rgb(94, 27, 89);
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: white;
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: #ffd9b3; /* Light peach for hover effect */
+}
+
+/* General Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+
+.container {
+    max-width: 200px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #9a289a; /* White for contrast */
+    box-shadow: 0 2px 10px white;
+    border-radius: 8px;
+    position: relative;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 200px;
+    background-color: #9a289a; /* Bright orange */
+    padding: 20px 0;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    animation: slideIn 1s ease-in-out;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar li:hover {
+    background-color: #9a289a; /* Slightly darker orange */
+    transform: scale(1.05); /* Scale effect on hover */
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.link:hover {
+    color: #ffd9b3; /* Light peach for hover effect */
+}
+@keyframes slideIn {
+    from {
+        left: -200px; /* Adjust based on the sidebar's width */
+    }
+    to {
+        left: 0;
+    }
+}
+

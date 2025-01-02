@@ -1,11 +1,37 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
+import pandas as pd
+from flask import Flask, jsonify, render_template, request, redirect, session, url_for, flash
 import mysql.connector
 from datetime import datetime
-
+import matplotlib.pyplot as plt
+import io
+import base64
 
 app = Flask(__name__)
 app.secret_key = '123'  # For flash messages and session management
-
+# Function to generate chart
+def generate_chart(data, title):
+    fig, ax = plt.subplots()
+    
+    # Make sure the correct columns are used (name and TotalRevenue or TotalSpent)
+    if 'name' in data.columns and 'TotalRevenue' in data.columns:
+        ax.bar(data['name'], data['TotalRevenue'])
+        ax.set_title(title)
+        ax.set_xlabel('Product')
+        ax.set_ylabel('Total Revenue')
+    elif 'Name' in data.columns and 'TotalSpent' in data.columns:
+        ax.bar(data['Name'], data['TotalSpent'])
+        ax.set_title(title)
+        ax.set_xlabel('Customer')
+        ax.set_ylabel('Total Spending')
+    else:
+        return None  # In case the expected columns are not found
+    
+    # Save the chart as an image
+    img_path = 'static/chart.png'
+    plt.savefig(img_path)
+    plt.close()
+    
+    return img_path
 # MySQL database connection
 def get_db_connection():
     connection = mysql.connector.connect(
@@ -36,7 +62,8 @@ def login():
         pharmacist = cursor.fetchone()
 
         if pharmacist:
-            # Welcome message for the authenticated pharmacist
+            # Store PharmacistID in session after successful login
+            session['pharmacist_id'] = pharmacist['PharmacistID']
             return redirect(url_for('dashboard'))  # Redirect to a dashboard (create this route)
         else:
             return redirect(url_for('home'))
@@ -48,6 +75,7 @@ def login():
     finally:
         if 'conn' in locals() and conn.is_connected():
             conn.close()
+
 
 @app.route('/dashboard')
 def dashboard():
@@ -598,7 +626,8 @@ def orders():
     cursor.execute('''
         select o.OrderID,ph.Name as PharmsticName , p.Name As ProductName, o.OrderDate ,o.Quantity
         from product p , pharmacist ph , orders o
-        where p.ProductID = o.ProductID and o.PharmacistID = ph.PharmacistID;
+        where p.ProductID = o.ProductID and o.PharmacistID = ph.PharmacistID
+                   order by o.OrderDate desc;
                    ''')
     rows = cursor.fetchall()
 
@@ -612,7 +641,11 @@ def orders():
 @app.route('/add_orders', methods=['GET', 'POST'])
 def add_orders():
     if request.method == 'POST':
-        PharmacistID = request.form['PharmacistID']
+        if 'pharmacist_id' not in session:
+            return redirect(url_for('login'))  # Redirect to login if not authenticated
+    
+    # Get logged-in pharmacist ID from session
+        PharmacistID = session['pharmacist_id']
         ProductID = request.form['ProductID']
         OrderDate = datetime.now().strftime("%Y-%m-%d")
         Quantity = request.form['Quantity']
@@ -636,7 +669,7 @@ def edit_orders(id):
 
     # Fetch the product by name
     print(f"Fetching orders with ID: {id}")
-    cursor.execute('select * from orders o WHERE OrderID = %s ', (id,))
+    cursor.execute('select * from orders o WHERE OrderID = %s', (id,))
     orders = cursor.fetchone()
     if not orders:
         conn.close()
@@ -645,7 +678,8 @@ def edit_orders(id):
 
     if request.method == 'POST':
         print("Form submitted!")
-        PharmacistID = request.form['PharmacistID']
+        
+        PharmacistID = session['pharmacist_id']
         ProductID = request.form['ProductID']
         OrderDate = datetime.now().strftime("%Y-%m-%d")
         Quantity = request.form['Quantity']
@@ -671,6 +705,154 @@ def delete_orders(id):
     conn.commit()
     conn.close()
     return redirect(url_for('orders'))
+
+@app.route("/sales")
+def sales():
+    return render_template('question_sale.html')
+
+@app.route("/new_sale")
+def new_sale():
+    return render_template('new_sale.html')
+
+# Route to process form submission
+@app.route('/submit', methods=['POST'])
+def submit_sales():
+    # Ensure that the pharmacist is logged in
+    if 'pharmacist_id' not in session:
+        return redirect(url_for('login'))  # Redirect to login if not authenticated
+    
+    # Get logged-in pharmacist ID from session
+    pharmacist_id = session['pharmacist_id']
+    data = request.form
+    date = data['date']
+    payment_method = data['payment_method']
+    customer_id = data['customer_id']
+    # Get lists of ProductID and Quantity
+    product_ids = data.getlist('product_id')  # This gets all the product IDs selected in the form
+    quantities = data.getlist('quantity')  # This gets the quantities corresponding to the products
+    # Calculate the total quantity purchased
+    
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        for product_id, quantity in zip(product_ids, quantities):
+            cursor.execute('''
+                INSERT INTO Sales (ProductID, Quantity, Date, PaymentMethod, CustomerID, PharmacistID)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            ''', (product_id, quantity, date, payment_method, customer_id, pharmacist_id))
+            # Update product quantity in stock (assuming you have a Product table with a Quantity column)
+            cursor.execute('''
+                UPDATE Product 
+                SET Quantity = Quantity - %s 
+                WHERE ProductID = %s
+            ''', (quantity, product_id))
+        conn.commit()
+    return redirect(url_for('sales'))
+
+@app.route("/sale_archive")
+def sale_archive():
+    # Get database connection
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # Fetch pharmacist details
+    cursor.execute('''
+        select s.SalesID ,ph.Name as PharmsticName , p.Name As ProductName, s.Date ,s.Quantity,s.PaymentMethod,c.Name As CustomerName
+        from product p , pharmacist ph , sales s, customer c
+        where p.ProductID = s.ProductID and s.PharmacistID = ph.PharmacistID and c.CustomerID= s.CustomerID
+                   order by s.Date desc;
+                   ''')
+    rows = cursor.fetchall()
+
+    # Close connection
+    cursor.close()
+    connection.close()
+
+    # Render template with the fetched data
+    return render_template('sale_archive.html', rows=rows)
+
+@app.route('/edit_sales/<int:id>', methods=['GET', 'POST'])
+def edit_sales(id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Fetch the product by name
+    print(f"Fetching sales with ID: {id}")
+    cursor.execute('select * from sales s WHERE SalesID = %s', (id,))
+    sales = cursor.fetchone()
+    if not sales:
+        conn.close()
+        print("sales not found!")
+        return redirect(url_for('sale_archive'))
+
+    if request.method == 'POST':
+        print("Form submitted!")
+        ProductID = request.form['ProductID']
+        CustomerID = request.form['CustomerID']
+        Date = datetime.now().strftime("%Y-%m-%d")
+        Quantity = request.form['Quantity']
+        PharmacistID=session['pharmacist_id']
+        PaymentMethod=request.form['PaymentMethod']
+        cursor.execute('''
+            UPDATE sales 
+            SET  ProductID = %s, Date = %s, Quantity= %s, CustomerID= %s , PaymentMethod=%s , PharmacistID= %s
+            WHERE SalesID = %s
+        ''', (ProductID, Date, Quantity, CustomerID,PaymentMethod ,PharmacistID,id))
+        conn.commit()
+        conn.close()
+        print("sales updated successfully!")
+        return redirect(url_for('sale_archive'))
+
+    conn.close()
+    return render_template('edit_sale.html', sales=sales)
+@app.route('/delete_sales/<int:id>', methods=['GET', 'POST'])
+def delete_sales(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM sales WHERE SalesID = %s', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('sale_archive'))
+
+@app.route('/reports')
+def reports():
+    conn = get_db_connection()
+    
+    try:
+        # Example Report 1: Total Sales by Product
+        report_query = """
+        SELECT Product.Name AS name, SUM(Sales.Quantity * Product.Price) AS TotalRevenue 
+        FROM Sales 
+        JOIN Product ON Sales.ProductID = Product.ProductID 
+        GROUP BY Product.ProductID
+        """
+        report_data = pd.read_sql(report_query, conn)
+        
+        # Generate chart for Total Sales by Product
+        chart_img = generate_chart(report_data, 'Total Sales by Product')
+        
+        # Example Report 2: Top 5 Customers by Total Spending
+        customer_query = """
+        SELECT Customer.Name AS Name, SUM(Sales.Quantity * Product.Price) AS TotalSpent 
+        FROM Sales 
+        JOIN Customer ON Sales.CustomerID = Customer.CustomerID 
+        JOIN Product ON Sales.ProductID = Product.ProductID 
+        GROUP BY Customer.CustomerID 
+        ORDER BY TotalSpent DESC 
+        LIMIT 5
+        """
+        customer_data = pd.read_sql(customer_query, conn)
+        
+        # Generate chart for Top 5 Customers by Spending
+        customer_chart = generate_chart(customer_data, 'Top 5 Customers by Spending')
+        
+    except Exception as e:
+        print(f"Error while executing SQL queries: {e}")
+        return "An error occurred while generating reports."
+    
+    finally:
+        conn.close()
+    
+    return render_template('report.html', chart_img=chart_img, customer_chart=customer_chart)
 @app.route('/')
 def home():
     return render_template('login.html')  # Render the login page

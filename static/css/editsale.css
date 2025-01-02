@@ -11,7 +11,7 @@ body {
     font-family: 'Times New Roman', Times, serif;
     margin: 0;
     padding: 20px; /* Adds padding for better spacing */
-    background-image: url('/static/b2.jpg');
+    background-image: url('/static/sale1.jpg');
     background-size: cover; /* Ensures the image covers the entire screen */
     background-position: center; /* Centers the image */ 
     background-repeat: no-repeat; 
@@ -21,10 +21,10 @@ body {
 /* Heading */
 h1 {
     font-size: 30px;
-    color: rgb(156, 9, 102);
-    margin-top: 20px;
+    color: rgb(24, 122, 139);
+    margin-top: 5px;
     margin-bottom: 20px;
-    margin-left: 250px;
+    margin-left: 850px;
 }
 
 /* Form Container */
@@ -32,10 +32,10 @@ form {
     background-color: #f4f8f5;
     border: 1px solid #d7edea;
     border-radius: 10px;
-    box-shadow: 0 4px 6px #f6f8f8;
+    box-shadow: 0 4px 6px rgb(24, 122, 139);
     padding: 20px;
     width: 300px;
-    margin-left: 200px; /* Ensures the form stays aligned to the left */
+    margin-left: 800px; /* Ensures the form stays aligned to the left */
 }
 
 /* Labels */
@@ -48,8 +48,10 @@ label {
 
 /* Inputs */
 input[type="text"],
-input[type="number"],
-input[type="date"] {
+input[type="email"],
+input[type="date"],
+input[type="number"]
+ {
     width: calc(100% - 20px);
     padding: 8px;
     margin-bottom: 15px;
@@ -60,7 +62,7 @@ input[type="date"] {
 
 /* Submit Button */
 input[type="submit"] {
-    background-color: rgb(156, 9, 102);
+    background-color: rgb(24, 122, 139);
     color: #ffffff;
     border: none;
     border-radius: 5px;

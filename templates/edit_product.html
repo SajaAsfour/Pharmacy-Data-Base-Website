@@ -38,7 +38,7 @@
             <input type="text" name="name" value="{{ product.Name }}" required><br>
 
             <label for="Price">Price:</label>
-            <input type="text" name="Price" value="{{ product.Price }}"><br>
+            <input type="number" name="Price" value="{{ product.Price }}" min="1"><br>
 
             <label for="ProductType">Product Type:</label>
             <input type="text" name="ProductType" value="{{ product.ProductType }}"><br>
@@ -51,7 +51,7 @@
 
             
             <label for="Quantity">Quantity:</label>
-            <input type="text" name="Quantity" value="{{ product.Quantity }}"><br>
+            <input type="number" name="Quantity" value="{{ product.Quantity }}" min="1"><br>
 
             <input type="submit" value="Update Product">
         </form>

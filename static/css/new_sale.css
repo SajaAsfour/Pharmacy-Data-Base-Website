@@ -1,0 +1,95 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url("/static/me.jpg");
+}
+
+h1 {
+    color: #333;
+    margin-left: 60px;
+}
+
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    margin-left: 550px;
+}
+
+/* Label and Input Field Styling */
+label {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+}
+
+input[type="date"],
+input[type="number"],
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input[type="date"]:focus,
+input[type="number"]:focus,
+input[type="text"]:focus {
+    border-color: #d36098;
+    outline: none;
+}
+
+/* Button Styling */
+button {
+    background-color: #d36098;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #d36098;
+}
+
+/* Product Section Styling */
+#products {
+    margin-bottom: 20px;
+}
+
+#products div {
+    margin-bottom: 15px;
+}
+
+/* Add Product Button Styling */
+button[type="button"] {
+    background-color: #d36098;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button[type="button"]:hover {
+    background-color: #d36098;
+}

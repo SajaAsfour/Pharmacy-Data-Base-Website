@@ -49,6 +49,7 @@ label {
 /* Inputs */
 input[type="text"],
 input[type="email"] ,
+input[type="number"] ,
 input[type="date"]  {
     width: calc(100% - 20px);
     padding: 8px;

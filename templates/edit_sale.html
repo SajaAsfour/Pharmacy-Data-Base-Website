@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update Order</title>
-    <link rel="stylesheet" href="/static/css/editorder.css">
+    <title>Update Sale</title>
+    <link rel="stylesheet" href="/static/css/editsale.css">
     <style>
         /* Animation for fade-in effect */
         @keyframes fadeIn {
@@ -29,16 +29,22 @@
     </style>
 </head>
 <body>
-    <h1>Update The Order</h1>
+    <h1>Update The Sale</h1>
     
     <div class="left-aligned">
-        <form action="{{ url_for('edit_orders', id=orders.OrderID) }}" method="POST">
+        <form action="{{ url_for('edit_sales', id=sales.SalesID) }}" method="POST">
 
             <label for="ProductID">Product ID:</label>
-            <input type="number" name="ProductID" value="{{ orders.ProductID }}" min="1"><br>
+            <input type="number" name="ProductID" value="{{ sales.ProductID }}" min="1"><br>
+
+            <label for="CustomerID">Customer ID:</label>
+            <input type="number" name="CustomerID" value="{{ sales.CustomerID }}" min="1"><br>
 
             <label for="Quantity">Quantity:</label>
-            <input type="number" name="Quantity" value="{{ orders.Quantity }}" min="1"><br>
+            <input type="number" name="Quantity" value="{{ sales.Quantity }}" min="1"><br>
+
+            <label for="PaymentMethod">Payment Method:</label>
+            <input type="text" name="PaymentMethod" value="{{ sales.PaymentMethod  }}" ><br>
 
             <input type="submit" value="Update The Order">
         </form>

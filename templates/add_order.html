@@ -33,11 +33,9 @@
     
     <div class="left-aligned">
         <form action="{{ url_for('add_orders') }}" method="POST">
-            <label for="PharmacistID">Pharmacist ID:</label>
-            <input type="number" name="PharmacistID" required><br>
 
             <label for="ProductID">Product ID:</label>
-            <input type="number" name="ProductID" required><br>
+            <input type="number" name="ProductID" required min="1"><br>
 
             <label for="Quantity">Quantity:</label>
             <input type="number" name="Quantity" required min="1"><br>

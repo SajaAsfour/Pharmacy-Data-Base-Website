@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/report.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <header>
+        <h1>Pharmacy Reports</h1>
+    </header>
+    
+    <section>
+        <h2>Total Sales by Product</h2>
+        <img src="data:image/png;base64,{{ chart_img }}" alt="Total Sales by Product Chart">
+        <p>This report shows the total sales for each product, including the quantity sold and total revenue.</p>
+    </section>
+
+    <section>
+        <h2>Top 5 Customers by Total Spending</h2>
+        <img src="data:image/png;base64,{{ customer_chart }}" alt="Top 5 Customers by Spending Chart">
+        <p>This report shows the top 5 customers based on the total money spent on purchases.</p>
+    </section>
+    <canvas id="salesChart"></canvas>
+    <script>
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Product 1', 'Product 2', 'Product 3'],
+                datasets: [{
+                    label: 'Sales by Product',
+                    data: [500, 300, 400],
+                    backgroundColor: ['#FF5733', '#33FF57', '#3357FF'],
+                }]
+            }
+        });
+    </script>
+    
+    <!-- More reports can be added similarly -->
+    
+    <footer>
+        <p>© 2025 Pharmacy Management System</p>
+    </footer>
+
+</body>
+</html>
