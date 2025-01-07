@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Order</title>
+    <link rel="stylesheet" href="/static/css/addorders.css">
+    <style>
+        /* Animation for fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply animation to the heading */
+        h1 {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Apply animation to the form */
+        form {
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add New Order</h1>
+    
+    <div class="left-aligned">
+        <form action="{{ url_for('add_orders2') }}" method="POST">
+
+            <label for="ProductID">Product ID:</label>
+            <input type="number" name="ProductID" required min="1"><br>
+
+            <label for="Quantity">Quantity:</label>
+            <input type="number" name="Quantity" required min="1"><br>
+
+            <input type="submit" value="Add Order">
+        </form>
+    </div>
+</body>
+</html>

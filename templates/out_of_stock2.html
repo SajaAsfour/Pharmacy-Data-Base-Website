@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("/static/error.jpg");
+            background-size: cover; /* Ensures the image covers the entire screen */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-attachment: fixed; /* Keeps the image fixed while scrolling */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Times New Roman', Times, serif;
+            animation: background-animation 10s infinite alternate; /* Applies the animation */
+        }
+
+        /* Keyframes for background animation */
+        @keyframes background-animation {
+            0% {
+                background-size: 100% 100%; /* Initial size */
+                filter: brightness(100%); /* Normal brightness */
+            }
+            50% {
+                background-size: 110% 110%; /* Slightly zoomed in */
+                filter: brightness(120%); /* Slightly brighter */
+            }
+            100% {
+                background-size: 100% 100%; /* Return to original size */
+                filter: brightness(100%); /* Return to normal brightness */
+            }
+        }
+
+        .message-container {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            animation: fade-in 2s; /* Adds a fade-in effect for the container */
+        }
+
+        /* Keyframes for fade-in effect */
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .message-container h1 {
+            font-size: 24px;
+            color: #495057;
+            margin-bottom: 20px;
+        }
+
+        .message-container p {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+
+        .message-container .btn {
+            background-color: #6f42c1;
+            color: #ffffff;
+            animation: button-glow 3s infinite; /* Adds a glow effect to the button */
+        }
+
+        .message-container .btn:hover {
+            background-color: #5a32a3;
+        }
+
+        /* Keyframes for button glow */
+        @keyframes button-glow {
+            0%, 100% {
+                box-shadow: 0 0 10px #6f42c1;
+            }
+            50% {
+                box-shadow: 0 0 20px #6f42c1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <h1>Notification</h1>
+        <p>{{ message }}</p>
+        <a href="{{ url_for('new_sale2') }}" class="btn btn-primary">Return to New Sale</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

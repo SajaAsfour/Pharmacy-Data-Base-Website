@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Your Information</title>
+    <link rel="stylesheet" href="/static/css/editusers.css">
+    <style>
+        /* Animation for fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply animation to the heading */
+        h1 {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Apply animation to the form */
+        form {
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Update Your Information</h1>
+    
+    <div class="left-aligned">
+        <form action="{{ url_for('edit_users2', name=users.Name if users.Name else '') }}" method="POST">
+
+
+            <label for="ContactInfo">Mobile Number:</label>
+            <input type="text" name="ContactInfo" value="{{ users.ContactInfo }}"><br>
+
+            <label for="Password">Password:</label>
+            <input type="text" name="Password" value="{{ users.Password }}"><br>
+        
+            
+            <label for="Username">Username:</label>
+            <input type="text" name="Username" value="{{ users.Username }}"><br>
+
+            <input type="submit" value="Update My Information">
+        </form>
+    </div>
+</body>
+</html>

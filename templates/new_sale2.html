@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales Form</title>
+    <link rel="stylesheet" href="/static/css/new_sale.css">
+</head>
+<body>
+    <form id="salesForm" action="/submit2" method="POST">
+
+        <label for="payment_method">Payment Method:</label>
+        <input type="text" id="payment_method" name="payment_method" required><br><br>
+
+        <label for="customer_id">Customer ID:</label>
+        <input type="number" id="customer_id" name="customer_id" min="1" required><br><br>
+
+        <h3>Products:</h3>
+        <div id="products">
+            <div>
+                <label for="product_id">Product ID:</label>
+                <input type="number" class="product_id" name="product_id" required>
+                <label for="quantity">Quantity:</label>
+                <input type="number" class="quantity" name="quantity" required>
+            </div>
+        </div>
+        <button type="button" onclick="addProduct()">Add Another Product</button><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+
+    <script>
+        function addProduct() {
+            const productsDiv = document.getElementById('products');
+            const newProductDiv = document.createElement('div');
+            newProductDiv.innerHTML = `
+                <label for="product_id">Product ID:</label>
+                <input type="number" class="product_id" name="product_id" required>
+                <label for="quantity">Quantity:</label>
+                <input type="number" class="quantity" name="quantity" required>
+            `;
+            productsDiv.appendChild(newProductDiv);
+        }
+    </script>
+</body>
+</html>

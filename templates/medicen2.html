@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Inventory</title>
+    <link rel="stylesheet" href="/static/css/medicen_style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+        
+    <div class="sidebar">
+        <ul>
+            <li><a href="/medicien2" class="link">Medicine</a></li>
+            <li><a href="/users2" class="link">Pharmacist Information</a></li>
+            <li><a href="/customer2" class="link">Customer</a></li>
+            <li><a href="/orders2" class="link">Orders</a></li>
+            <li><a href="/sales2" class="link">Sales</a></li>
+            <li><a href="/" class="link">LogOut</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h1>Product Inventory</h1>
+        <div class="top-right-box">
+            {% if low_stock_products %}
+                <p>Attention!! The following products have low stock⚠️</p>
+                <ul>
+                    {% for product in low_stock_products %}
+                        
+                        <li>{{ product.name }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>All products are sufficiently stocked!😎</p>
+            {% endif %}
+        </div>
+
+        <a href="/add2" class="addBox">Add New Product  </a>
+
+        <div class="search-container">
+            <form action="/medicien2" method="GET">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by Product ID Or Name"
+                    class="search-box"
+                    value="{{ request.args.get('search', '') }}"
+                />
+                <button type="submit" class="search-icon">🔍</button>
+            </form>
+        </div>
+        
+        
+
+
+        <!-- Table displaying records -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Expiration Date</th>
+                        <th>Product Type</th>
+                        <th>Quantity</th>
+                        <th>LastUpdatedDate</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    {% for row in rows %}
+                    <tr class="animated-row">
+                        <td class="dynamic-data">{{ row.ProductID }}</td>
+                        <td class="dynamic-data">{{ row.Name }}</td>
+                        <td class="dynamic-data">{{ row.Price }}</td>
+                        <td class="dynamic-data">{{ row.ExpirationDate }}</td>
+                        <td class="dynamic-data">{{ row.ProductType }}</td>
+                        <td class="dynamic-data">{{ row.Quantity }}</td>
+                        <td class="dynamic-data">{{ row.LastUpdatedDate }}</td>
+                        
+                        <td>
+                            <a class="edit-btn" href="{{ url_for('edit_product2', name= row.Name) }}">Edit</a>
+                            <a class="delete-btn" href="{{ url_for('delete_product2', name= row.Name) }}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>        
+    </div>
+</body>
+</html>

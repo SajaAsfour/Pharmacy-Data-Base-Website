@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Information</title>
+    <link rel="stylesheet" href="/static/css/arch.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Sales Information</h1>
+        <a href="/sales2" class="addBox">Return Back</a>
+
+        <div class="search-container">
+            <form action="/sale_archive2" method="GET">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by Sales ID Or Date"
+                    class="search-box"
+                    value="{{ request.args.get('search', '') }}"
+                />
+                <button type="submit" class="search-icon">🔍</button>
+            </form>
+        </div>
+        <!-- Table displaying records -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sales ID</th>
+                        <th>Product Name</th>
+                        <th>Pharmacist Name</th>
+                        <th>Sales Date</th>
+                        <th>Customer Name</th>
+                        <th>Quantity</th>
+                        <th>Payment Method</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    {% for row in rows %}
+                    <tr class="animated-row">
+                        <td class="dynamic-data">{{ row.SalesID  }}</td>
+                        <td class="dynamic-data">{{ row.ProductName }}</td>
+                        <td class="dynamic-data">{{ row.PharmsticName }}</td>
+                        <td class="dynamic-data">{{ row.Date }}</td>
+                        <td class="dynamic-data">{{ row.CustomerName }}</td>
+                        <td class="dynamic-data">{{ row.Quantity }}</td>
+                        <td class="dynamic-data">{{ row.PaymentMethod }}</td>
+                        <td>
+                            <a class="edit-btn" href="{{ url_for('edit_sales2', id= row.SalesID) }}">Edit</a>
+                            <a class="delete-btn" href="{{ url_for('delete_sales2', id= row.SalesID) }}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>        
+    </div>
+</body>
+</html>

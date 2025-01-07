@@ -1,0 +1,61 @@
+<!--
+    Saja Asfour 1210737
+    Fatima Dawabsheh 1210827
+    Shahd Shreteh 1210444
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="/static/css/add.css">
+    <style>
+        /* Animation for fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply animation to the heading */
+        h1 {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Apply animation to the form */
+        form {
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add New Product</h1>
+    
+    <div class="left-aligned">
+        <form action="{{ url_for('add_product2') }}" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" name="name" required><br>
+
+            <label for="Price">Price:</label>
+            <input type="number" name="Price" min="1"><br>
+
+            <label for="ProductType">Product Type:</label>
+            <input type="text" name="ProductType"><br>
+            
+            <label for="ExpirationDate">Expiration Date:</label>
+            <input type="date" name="ExpirationDate"><br>
+
+            <label for="Description">Description:</label>
+            <input type="text" name="Description"><br>
+
+            <input type="submit" value="Add Product">
+        </form>
+    </div>
+</body>
+</html>
