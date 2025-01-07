@@ -10,12 +10,11 @@ body {
 }
 
 /* Container Styles */
-/* Container Styles */
 .container {
     max-width: 1200px;
     margin: 50px auto;
     padding: 20px;
-    background: rgba(241, 236, 236, 0.7); /* Semi-transparent white */
+    background: rgba(241, 236, 236, 0.7); 
     box-shadow: 0 2px 10px rgba(247, 246, 246, 0.1);
     border-radius: 8px;
     margin-left: 20px;
@@ -48,7 +47,7 @@ th, td {
 }
 
 th {
-    background-color: #9b7537; /* Matches sidebar */
+    background-color: #9b7537; 
     color: white;
 }
 
@@ -64,13 +63,13 @@ tr:nth-child(odd) {
 }
 
 tr:hover {
-    background-color: #f8f7f5; /* Hover color */
+    background-color: #f8f7f5; 
     transition: background-color 0.3s ease-in-out;
 }
 
 /* General Button Styles */
 button, .edit-btn, .delete-btn, .addBox {
-    padding: 8px ;
+    padding: 5px ;
     font-size: 14px;
     border: none;
     border-radius: 5px;
@@ -99,7 +98,7 @@ button:hover, .edit-btn:hover, .delete-btn:hover, .addBox:hover {
 }
 
 .delete-btn:hover {
-    background-color: #6c4b03; /* Darker shade for delete hover */
+    background-color: #6c4b03; 
 }
 
 /* Animations */
@@ -154,4 +153,69 @@ button:hover, .edit-btn:hover, .delete-btn:hover, .addBox:hover {
 .addBox:hover {
     text-decoration: underline;
     background-color: #9b7537; 
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f4f6f7; 
+    border: 2px solid #9b7537; 
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+/* Search Box Input */
+.search-box {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #bdc3c7; 
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    margin-right: 10px; /* Space between input and button */
+    width: 300px;
+}
+
+.search-box:focus {
+    border-color: #9b7537; 
+    box-shadow: 0 0 8px #9b7537; 
+}
+
+/* Search Button */
+.search-icon {
+    padding: 10px 20px;
+    background-color: #9b7537; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-icon:hover {
+    background-color: #9b7537; 
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+.search-icon:active {
+    background-color: #9b7537; 
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column; /* Stack input and button vertically */
+    }
+
+    .search-box {
+        margin-right: 0; /* Remove margin between input and button */
+        margin-bottom: 10px; /* Add space below input */
+    }
 }

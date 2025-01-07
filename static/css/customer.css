@@ -5,6 +5,7 @@ body {
     padding: 0;
     background-color: #e8f5f4; /* Light teal for background */
     color: #2b2b2b; /* Dark gray for text */
+    background-image: url("/static/cT.jpg");
 }
 
 /* Sidebar Styles */
@@ -24,36 +25,6 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
-}
-
-.sidebar li {
-    padding: 15px;
-    cursor: pointer;
-}
-
-.sidebar li:hover {
-    background-color: #005f69; /* Slightly darker teal */
-}
-
-.link {
-    color: white;
-    text-decoration: none;
-}
-
-.link:hover {
-    color: #c4e4e3; /* Light teal for hover effect */
-}
-
-/* Container Styles */
-.container {
-    max-width: 1200px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #ffffff; /* Pure white for contrast */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    margin-left: 220px;
-    position: relative;
 }
 
 /* Heading Styles */
@@ -95,10 +66,6 @@ tr:nth-child(odd) {
     background-color: #f6f6f6; /* Very light gray */
 }
 
-tr:hover {
-    background-color: #66a5a8; /* Medium teal for hover effect */
-}
-
 .addBox {
     font-family: 'Times New Roman', Times, serif;
     padding: 10px 10px;
@@ -112,16 +79,6 @@ tr:hover {
 .addBox:hover {
     text-decoration: underline;
     background-color: #0d7b80; 
-}
-
-/* General Button Styles */
-button {
-    padding: 8px 12px;
-    font-size: 14px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
 /* Edit Button */
@@ -157,45 +114,6 @@ a.edit-btn:hover {
 
 a.delete-btn:hover {
     background-color: #b71f1f; /* Darker red for delete hover */
-}
-
-/* Top-right Box */
-.top-right-box {
-    position: absolute;
-    top: 30px;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 2px solid #006d77;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    font-size: 14px;
-    text-align: center;
-    color: #2b2b2b;
-    z-index: 1;
-    margin-right: 10px;
-}
-/* General Body Styles */
-body {
-    font-family: 'Times New Roman', Times, serif, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #e8f5f4; /* Light teal for background */
-    color: #2b2b2b; /* Dark gray for text */
-}
-
-/* Sidebar Styles */
-.sidebar {
-    width: 200px;
-    background-color: #006d77; /* Deep teal */
-    padding: 20px 0;
-    color: white;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    animation: slide-in 1s ease-out; /* Sidebar slide-in animation */
 }
 
 @keyframes slide-in {
@@ -234,7 +152,7 @@ body {
     max-width: 1200px;
     margin: 50px auto;
     padding: 20px;
-    background: #ffffff; /* Pure white for contrast */
+    background: rgba(241, 236, 236, 0.7); /* Semi-transparent white */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin-left: 220px;
@@ -299,5 +217,71 @@ button:hover {
     to {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+
+/* Search Container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f4f6f7; /* Light gray for the search area */
+    border: 2px solid #006d77; /* Bright blue border */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+/* Search Box Input */
+.search-box {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #bdc3c7; /* Light gray border */
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    margin-right: 10px; /* Space between input and button */
+    width: 300px;
+}
+
+.search-box:focus {
+    border-color: #006d77; /* Bright blue focus */
+    box-shadow: 0 0 8px #006d77; /* Soft blue glow */
+}
+
+/* Search Button */
+.search-icon {
+    padding: 10px 20px;
+    background-color: #006d77; /* Bright blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-icon:hover {
+    background-color: #006d77; 
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+.search-icon:active {
+    background-color: #006d77; 
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column; /* Stack input and button vertically */
+    }
+
+    .search-box {
+        margin-right: 0; /* Remove margin between input and button */
+        margin-bottom: 10px; /* Add space below input */
     }
 }

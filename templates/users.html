@@ -38,6 +38,18 @@
 
         <a href="/addusers" class="addBox">Add New Pharmastic  </a>
 
+        <div class="search-container">
+            <form action="/users" method="GET">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by Pharmacist ID Or Name"
+                    class="search-box"
+                    value="{{ request.args.get('search', '') }}"
+                />
+                <button type="submit" class="search-icon">🔍</button>
+            </form>
+        </div>
         <!-- Table displaying records -->
         <div class="table-container">
             <table>

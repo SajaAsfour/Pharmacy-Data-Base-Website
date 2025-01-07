@@ -3,35 +3,9 @@ from flask import Flask, jsonify, render_template, request, redirect, session, u
 import mysql.connector
 from datetime import datetime
 import matplotlib.pyplot as plt
-import io
-import base64
 
 app = Flask(__name__)
 app.secret_key = '123'  # For flash messages and session management
-# Function to generate chart
-def generate_chart(data, title):
-    fig, ax = plt.subplots()
-    
-    # Make sure the correct columns are used (name and TotalRevenue or TotalSpent)
-    if 'name' in data.columns and 'TotalRevenue' in data.columns:
-        ax.bar(data['name'], data['TotalRevenue'])
-        ax.set_title(title)
-        ax.set_xlabel('Product')
-        ax.set_ylabel('Total Revenue')
-    elif 'Name' in data.columns and 'TotalSpent' in data.columns:
-        ax.bar(data['Name'], data['TotalSpent'])
-        ax.set_title(title)
-        ax.set_xlabel('Customer')
-        ax.set_ylabel('Total Spending')
-    else:
-        return None  # In case the expected columns are not found
-    
-    # Save the chart as an image
-    img_path = 'static/chart.png'
-    plt.savefig(img_path)
-    plt.close()
-    
-    return img_path
 # MySQL database connection
 def get_db_connection():
     connection = mysql.connector.connect(
@@ -327,22 +301,34 @@ def dashboard():
 
     return render_template('dashboard.html',sales=sales,orders=orders ,NumnerofOrder=NumnerofOrder,TotalOrderPrice=TotalOrderPrice,TotalStockValue=TotalStockValue,total_customers=total_customers ,total_pharmacist=total_pharmacist,Quantity_of_sales=Quantity_of_sales,TotalRevenue=TotalRevenue,TotalRevenueInDay=TotalRevenueInDay)
     
-@app.route('/medicien')
+@app.route('/medicien', methods=['GET'])
 def medicien():
-        # Establish database connection
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    cursor.execute("select p.name , p.Price , p.ExpirationDate,p.ProductType,p.Quantity,p.LastUpdatedDate from product p order by p.Quantity ") 
+    # Get the search query from the request
+    search_query = request.args.get('search', default='', type=str)
+
+    if search_query.isdigit():  # If the search query is numeric, search by ID
+        cursor.execute("SELECT * FROM product p WHERE p.ProductID = %s", (search_query,))
+    elif search_query:  # Otherwise, search by name
+        cursor.execute("SELECT * FROM product p WHERE p.Name LIKE %s ORDER BY p.Quantity", 
+                       (f"%{search_query}%",))
+    else:  # Default case, no search query
+        cursor.execute("SELECT * FROM product p ORDER BY p.Quantity")
+
     rows = cursor.fetchall()
 
     # Fetch products with low stock (Quantity <= 5)
     cursor.execute("SELECT p.name FROM product p WHERE p.Quantity <= 5")
-    low_stock_products = cursor.fetchall()  # This will return a list of dictionaries
-        # Close connection
+    low_stock_products = cursor.fetchall()
+
     cursor.close()
     connection.close()
+
     return render_template('medicen.html', rows=rows, low_stock_products=low_stock_products)
+
+
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_product():
@@ -412,14 +398,23 @@ def delete_product(name):
     conn.close()
     return redirect(url_for('medicien'))
 
-@app.route("/users")
+@app.route("/users", methods=['GET'])
 def users():
     # Get database connection
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+  # Get the search query from the request
+    search_query = request.args.get('search', default='', type=str)
 
+    if search_query.isdigit():  # If the search query is numeric, search by ID
+        cursor.execute("SELECT * FROM pharmacist p WHERE p.PharmacistID = %s", (search_query,))
+    elif search_query:  # Otherwise, search by name
+        cursor.execute("SELECT * FROM pharmacist p WHERE p.Name LIKE %s", 
+                       (f"%{search_query}%",))
+    else:  # Default case, no search query
+         cursor.execute("SELECT Name, ContactInfo, Role, Wage FROM Pharmacist")
     # Fetch pharmacist details
-    cursor.execute("SELECT Name, ContactInfo, Role, Wage FROM Pharmacist")
+   
     rows = cursor.fetchall()
 
     # Calculate the first day of the current month in Python
@@ -513,14 +508,23 @@ def delete_users(name):
     conn.close()
     return redirect(url_for('users'))
 
-@app.route("/customer")
+@app.route("/customer", methods=['GET'])
 def customers():
     # Get database connection
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+# Get the search query from the request
+    search_query = request.args.get('search', default='', type=str)
 
+    if search_query.isdigit():  # If the search query is numeric, search by ID
+        cursor.execute("SELECT * FROM customer  WHERE CustomerID = %s", (search_query,))
+    elif search_query:  # Otherwise, search by name
+        cursor.execute("SELECT * FROM customer  WHERE Name LIKE %s", 
+                       (f"%{search_query}%",))
+    else:  # Default case, no search query
+        cursor.execute("SELECT Name, city, street, DateOfBirth, Email, Phonenum FROM customer")
     # Fetch pharmacist details
-    cursor.execute("SELECT Name, city, street, DateOfBirth, Email, Phonenum FROM customer")
+    
     rows = cursor.fetchall()
 
     # Calculate the first day of the current month in Python
@@ -616,19 +620,31 @@ def delete_customers(name):
     conn.close()
     return redirect(url_for('customers'))
 
-@app.route("/orders")
+@app.route("/orders", methods=['GET'])
 def orders():
     # Get database connection
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+# Get the search query from the request
+    search_query = request.args.get('search', default='', type=str)
 
+    if search_query.isdigit():  # If the search query is numeric, search by ID
+        cursor.execute("select o.OrderID,ph.Name as PharmsticName , p.Name As ProductName, o.OrderDate ,o.Quantity from product p , pharmacist ph , orders o   WHERE o.OrderID = %s and p.ProductID = o.ProductID and o.PharmacistID = ph.PharmacistID order by o.OrderDate desc", (search_query,))
+    
+    elif search_query:  # Otherwise, search by name
+        cursor.execute("""select o.OrderID,ph.Name as PharmsticName , p.Name As ProductName, o.OrderDate ,o.Quantity
+            from product p , pharmacist ph , orders o
+            where p.ProductID = o.ProductID and o.PharmacistID = ph.PharmacistID and o.OrderDate = %s
+                    order by o.OrderDate desc """, 
+                       (f"{search_query}",))
+    else:  # Default case, no search query
     # Fetch pharmacist details
-    cursor.execute('''
-        select o.OrderID,ph.Name as PharmsticName , p.Name As ProductName, o.OrderDate ,o.Quantity
-        from product p , pharmacist ph , orders o
-        where p.ProductID = o.ProductID and o.PharmacistID = ph.PharmacistID
-                   order by o.OrderDate desc;
-                   ''')
+        cursor.execute('''
+            select o.OrderID,ph.Name as PharmsticName , p.Name As ProductName, o.OrderDate ,o.Quantity
+            from product p , pharmacist ph , orders o
+            where p.ProductID = o.ProductID and o.PharmacistID = ph.PharmacistID
+                    order by o.OrderDate desc;
+                    ''')
     rows = cursor.fetchall()
 
     # Close connection
@@ -720,47 +736,99 @@ def submit_sales():
     # Ensure that the pharmacist is logged in
     if 'pharmacist_id' not in session:
         return redirect(url_for('login'))  # Redirect to login if not authenticated
-    
+
     # Get logged-in pharmacist ID from session
     pharmacist_id = session['pharmacist_id']
     data = request.form
-    date = data['date']
+    date = datetime.now().strftime("%Y-%m-%d")
     payment_method = data['payment_method']
     customer_id = data['customer_id']
-    # Get lists of ProductID and Quantity
-    product_ids = data.getlist('product_id')  # This gets all the product IDs selected in the form
-    quantities = data.getlist('quantity')  # This gets the quantities corresponding to the products
-    # Calculate the total quantity purchased
-    
+    product_ids = data.getlist('product_id')
+    quantities = data.getlist('quantity')
+
     with get_db_connection() as conn:
         cursor = conn.cursor()
+
         for product_id, quantity in zip(product_ids, quantities):
+            product_id = int(product_id)
+            quantity = int(quantity)
+
+            # Fetch the current stock of the product
+            cursor.execute('''
+                SELECT Quantity, Description 
+                FROM Product 
+                WHERE ProductID = %s
+            ''', (product_id,))
+            result = cursor.fetchone()
+
+            if not result:
+                return f"Product ID {product_id} does not exist.", 400
+
+            current_stock, description = result
+
+            # Check if stock is sufficient
+            if quantity > current_stock:
+                # Find an alternative product with the same description
+                cursor.execute('''
+                    SELECT ProductID, Name 
+                    FROM Product 
+                    WHERE Description = %s AND Quantity > 0 AND ProductID != %s
+                    LIMIT 1
+                ''', (description, product_id))
+                alternative = cursor.fetchone()
+
+                if alternative:
+                    alternative_id, alternative_name = alternative
+                    return f"Product ID {product_id} is out of stock. Consider Product ID {alternative_id} ({alternative_name}) instead.", 400
+                else:
+                    return f"Product ID {product_id} is out of stock, and no alternatives are available.", 400
+
+            # Insert the sale record
             cursor.execute('''
                 INSERT INTO Sales (ProductID, Quantity, Date, PaymentMethod, CustomerID, PharmacistID)
                 VALUES (%s, %s, %s, %s, %s, %s)
             ''', (product_id, quantity, date, payment_method, customer_id, pharmacist_id))
-            # Update product quantity in stock (assuming you have a Product table with a Quantity column)
+
+            # Update the product quantity
             cursor.execute('''
                 UPDATE Product 
                 SET Quantity = Quantity - %s 
                 WHERE ProductID = %s
             ''', (quantity, product_id))
+
         conn.commit()
+
     return redirect(url_for('sales'))
 
-@app.route("/sale_archive")
+@app.route("/sale_archive", methods=['GET'])
 def sale_archive():
     # Get database connection
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+# Get the search query from the request
+    search_query = request.args.get('search', default='', type=str)
 
-    # Fetch pharmacist details
-    cursor.execute('''
-        select s.SalesID ,ph.Name as PharmsticName , p.Name As ProductName, s.Date ,s.Quantity,s.PaymentMethod,c.Name As CustomerName
+    if search_query.isdigit():  # If the search query is numeric, search by ID
+        cursor.execute("""select s.SalesID ,ph.Name as PharmsticName , p.Name As ProductName, s.Date ,s.Quantity,s.PaymentMethod,c.Name As CustomerName
         from product p , pharmacist ph , sales s, customer c
         where p.ProductID = s.ProductID and s.PharmacistID = ph.PharmacistID and c.CustomerID= s.CustomerID
-                   order by s.Date desc;
-                   ''')
+        and s.SalesID = %s
+        order by s.Date desc """, (search_query,))
+    elif search_query:  # Otherwise, search by name
+        cursor.execute("""select s.SalesID ,ph.Name as PharmsticName , p.Name As ProductName, s.Date ,s.Quantity,s.PaymentMethod,c.Name As CustomerName
+        from product p , pharmacist ph , sales s, customer c
+        where p.ProductID = s.ProductID and s.PharmacistID = ph.PharmacistID and c.CustomerID= s.CustomerID
+        and s.Date = %s
+        order by s.Date desc""", 
+                       (f"{search_query}",))
+    else:  # Default case, no search query
+    # Fetch pharmacist details
+        cursor.execute('''
+            select s.SalesID ,ph.Name as PharmsticName , p.Name As ProductName, s.Date ,s.Quantity,s.PaymentMethod,c.Name As CustomerName
+            from product p , pharmacist ph , sales s, customer c
+            where p.ProductID = s.ProductID and s.PharmacistID = ph.PharmacistID and c.CustomerID= s.CustomerID
+                    order by s.Date desc;
+                    ''')
     rows = cursor.fetchall()
 
     # Close connection
@@ -813,49 +881,408 @@ def delete_sales(id):
     conn.close()
     return redirect(url_for('sale_archive'))
 
+@app.route('/get_chart')
+def get_chart_data():
+    connection = get_db_connection()
+    # Query execution
+    query = """
+    SELECT 
+        P.Name AS ProductName, 
+        SUM(S.Quantity * P.Price) AS TotalRevenue
+    FROM 
+        Sales S
+    JOIN 
+        Product P ON S.ProductID = P.ProductID
+    GROUP BY 
+        P.Name
+    HAVING 
+        SUM(S.Quantity * P.Price) > 500;
+    """
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    connection.close()
+
+    # Convert result to JSON
+    data = {"productNames": [], "totalRevenue": []}
+    for row in result:
+        data["productNames"].append(row[0])  # ProductName
+        data["totalRevenue"].append(row[1])  # TotalRevenue
+
+    return jsonify(data)
+
+@app.route('/get_chart1')
+def get_chart_data1():
+    connection = get_db_connection()
+
+    # Query execution
+    query = """
+    SELECT 
+        PH.Name AS PharmacistName, 
+        SUM(S.Quantity * P.Price) AS TotalRevenue
+    FROM 
+        Pharmacist PH
+    LEFT JOIN 
+        Sales S ON PH.PharmacistID = S.PharmacistID
+    LEFT JOIN 
+        Product P ON S.ProductID = P.ProductID
+    GROUP BY 
+        PH.Name
+    ORDER BY 
+        TotalRevenue DESC;
+    """
+    
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    connection.close()
+
+    # Convert result to JSON
+    data = {"pharmacistNames": [], "totalRevenue": []}
+    for row in result:
+        data["pharmacistNames"].append(row[0])  # PharmacistName
+        data["totalRevenue"].append(row[1])    # TotalRevenue
+
+    return jsonify(data)
+
+@app.route('/report2')
+def report2():
+    return render_template ('report2.html')
+
+@app.route('/get_chart3')
+def get_chart_data3():
+    connection = get_db_connection()
+    # Query execution
+    query = """
+    SELECT 
+        C.Name AS CustomerName, 
+        SUM(S.Quantity * P.Price) AS TotalSpent
+    FROM 
+        Customer C
+    JOIN 
+        Sales S ON C.CustomerID = S.CustomerID
+    JOIN 
+        Product P ON S.ProductID = P.ProductID
+    GROUP BY 
+        C.Name
+    ORDER BY 
+        TotalSpent DESC
+    LIMIT 3;
+    """
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    connection.close()
+
+    # Check if results exist
+    if not result:
+        return jsonify({"error": "No data available"})
+
+    # Convert result to JSON
+    data = {"customerNames": [], "totalSpent": []}
+    for row in result:
+        data["customerNames"].append(row[0])  # CustomerName
+        data["totalSpent"].append(row[1])  # TotalSpent
+
+    return jsonify(data)
+@app.route('/report3')
+def report3():
+    # Serve the HTML file
+    return  render_template('report3.html')
+
+@app.route('/get_chart_data5')
+def get_chart_data5():
+    connection = get_db_connection()
+    
+    query = """
+    SELECT 
+        P.ProductType, 
+        SUM(S.Quantity) AS TotalQuantitySold
+    FROM 
+        Sales S
+    JOIN 
+        Product P ON S.ProductID = P.ProductID
+    GROUP BY 
+        P.ProductType;
+    """
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    connection.close()
+
+    # Convert results to JSON format
+    data = {"productTypes": [], "totalQuantities": []}
+    for row in result:
+        data["productTypes"].append(row[0])  # ProductType
+        data["totalQuantities"].append(row[1])  # TotalQuantitySold
+
+    return jsonify(data)
+
+@app.route('/report5')
+def index():
+    return render_template('report5.html')  # Render HTML template
+
+@app.route('/get_chart7')
+def get_chart_data7():
+    connection = get_db_connection()
+    
+    # Updated query execution
+    query = """
+    SELECT 
+        P.Name AS ProductName, 
+        SUM(S.Quantity) AS TotalPurchased
+    FROM 
+        Sales S
+    JOIN 
+        Product P ON S.ProductID = P.ProductID
+    GROUP BY 
+        P.ProductID
+    ORDER BY 
+        TotalPurchased DESC
+    ;
+    """
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    connection.close()
+
+    # Convert result to JSON
+    data = {"productName": "", "totalPurchased": 0}
+    if result:
+        row = result[0]
+        data["productName"] = row[0]  # ProductName
+        data["totalPurchased"] = row[1]  # TotalPurchased
+
+    return jsonify(data)
+
+@app.route('/report7')
+def report7():
+    # Serve the HTML file
+    return  render_template('report7.html')
+
+@app.route('/get_chart8')
+def get_chart_data8():
+    connection = get_db_connection()
+    
+    # Updated query execution
+    query = """
+    SELECT 
+        PH.Name AS PharmacistName, 
+        SUM(O.Quantity) AS TotalQuantityOrdered
+    FROM 
+        Pharmacist PH
+    JOIN 
+        Orders O ON PH.PharmacistID = O.PharmacistID
+    GROUP BY 
+        PH.Name;
+    """
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    connection.close()
+
+    # Convert result to JSON
+    data = {"pharmacistNames": [], "totalQuantitiesOrdered": []}
+    for row in result:
+        data["pharmacistNames"].append(row[0])  # PharmacistName
+        data["totalQuantitiesOrdered"].append(row[1])  # TotalQuantityOrdered
+
+    return jsonify(data)
+
+@app.route('/report8')
+def report8():
+    # Serve the HTML file
+    return  render_template('report8.html')
+@app.route('/get_chart11')
+def get_chart_data11():
+    connection = get_db_connection()
+    query = """
+    SELECT 
+        PaymentMethod, 
+        SUM(S.Quantity * P.Price) AS TotalRevenue
+    FROM 
+        Sales S
+    JOIN 
+        Product P ON S.ProductID = P.ProductID
+    GROUP BY 
+        PaymentMethod
+    ORDER BY 
+        TotalRevenue DESC
+    LIMIT 1;
+    """
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    connection.close()
+
+    # Convert result to JSON
+    data = {"paymentMethods": [], "totalRevenue": []}
+    for row in result:
+        data["paymentMethods"].append(row[0])  # PaymentMethod
+        data["totalRevenue"].append(row[1])  # TotalRevenue
+
+    return jsonify(data)
+
+@app.route('/report11')
+def report11():
+    # Serve the HTML file
+    return  render_template('report11.html')
 @app.route('/reports')
-def reports():
-    conn = get_db_connection()
+def home1():
+    # Serve the HTML file
+    return  render_template('report.html')
+
+@app.route("/report4")
+def report4():
+    # Get database connection
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
     
-    try:
-        # Example Report 1: Total Sales by Product
-        report_query = """
-        SELECT Product.Name AS name, SUM(Sales.Quantity * Product.Price) AS TotalRevenue 
-        FROM Sales 
-        JOIN Product ON Sales.ProductID = Product.ProductID 
-        GROUP BY Product.ProductID
-        """
-        report_data = pd.read_sql(report_query, conn)
-        
-        # Generate chart for Total Sales by Product
-        chart_img = generate_chart(report_data, 'Total Sales by Product')
-        
-        # Example Report 2: Top 5 Customers by Total Spending
-        customer_query = """
-        SELECT Customer.Name AS Name, SUM(Sales.Quantity * Product.Price) AS TotalSpent 
-        FROM Sales 
-        JOIN Customer ON Sales.CustomerID = Customer.CustomerID 
-        JOIN Product ON Sales.ProductID = Product.ProductID 
-        GROUP BY Customer.CustomerID 
-        ORDER BY TotalSpent DESC 
-        LIMIT 5
-        """
-        customer_data = pd.read_sql(customer_query, conn)
-        
-        # Generate chart for Top 5 Customers by Spending
-        customer_chart = generate_chart(customer_data, 'Top 5 Customers by Spending')
-        
-    except Exception as e:
-        print(f"Error while executing SQL queries: {e}")
-        return "An error occurred while generating reports."
+    # SQL query to fetch the data
+    query = '''
+        SELECT 
+            Name AS ProductName, 
+            ExpirationDate, 
+            Quantity
+        FROM 
+            Product
+        WHERE 
+            ExpirationDate BETWEEN %s AND DATE_ADD(%s, INTERVAL 90 DAY)
+            AND Quantity < 50;
+    '''
+    cursor.execute(query, (current_date, current_date))
+    rows = cursor.fetchall()
+
+    # Close connection
+    cursor.close()
+    connection.close()
+
+    # Render template with the fetched data
+    return render_template('report4.html', rows=rows)
+@app.route("/report10")
+def report10():
+    # Get database connection
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
     
-    finally:
-        conn.close()
-    
-    return render_template('report.html', chart_img=chart_img, customer_chart=customer_chart)
+    # SQL query to fetch the data
+    query = '''
+        SELECT 
+        P.Name AS ProductName, 
+        P.Quantity AS CurrentStock, 
+        COALESCE(SUM(O.Quantity), 0) AS TotalOrdered
+    FROM 
+        Product P
+    LEFT JOIN 
+        Orders O ON P.ProductID = O.ProductID
+    WHERE 
+        P.Quantity < 30
+    GROUP BY 
+        P.Name, P.Quantity;
+    '''
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    # Close connection
+    cursor.close()
+    connection.close()
+
+    # Render template with the fetched data
+    return render_template('report10.html', rows=rows)
+
+@app.route("/report6")
+def report6():
+    # Get database connection
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # SQL query to fetch the data
+    query = '''
+        SELECT 
+            Role, 
+            AVG(Wage) AS AvgWage, 
+            MAX(Wage) AS MaxWage
+        FROM 
+            Pharmacist
+        GROUP BY 
+            Role;
+    '''
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    # Close connection
+    cursor.close()
+    connection.close()
+
+    # Render template with the fetched data
+    return render_template('report6.html', rows=rows)
+
+@app.route("/report12")
+def report12():
+    # Get database connection
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # SQL query to fetch the data
+    query = '''
+        SELECT 
+        P.Name AS ProductName
+    FROM 
+        Product P
+    LEFT JOIN 
+        Sales S ON P.ProductID = S.ProductID
+    WHERE 
+        S.ProductID IS NULL;
+    '''
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    # Close connection
+    cursor.close()
+    connection.close()
+
+    # Render template with the fetched data
+    return render_template('report12.html', rows=rows)
 @app.route('/')
 def home():
     return render_template('login.html')  # Render the login page
 
+@app.route('/report9')
+def customer_spending_by_city():
+    # SQL query
+    query = """
+        SELECT 
+            C.city AS City, 
+            C.Name AS CustomerName, 
+            SUM(P.Price * S.Quantity) AS TotalSpent
+        FROM 
+            Customer C
+        JOIN 
+            Sales S ON C.CustomerID = S.CustomerID
+        JOIN 
+            Product P ON S.ProductID = P.ProductID
+        WHERE 
+            P.Price > 50
+        GROUP BY 
+            C.city, C.Name
+        ORDER BY 
+            TotalSpent DESC;
+    """
+
+    # Fetch data from the database
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    # Close connection
+    cursor.close()
+    connection.close()
+    # Render results in the HTML template
+    return render_template('report9.html', rows=rows)
 if __name__ == '__main__':
     app.run(debug=True)

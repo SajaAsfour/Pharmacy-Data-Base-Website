@@ -6,6 +6,7 @@ body {
     background-color: #eef2f3;
     color: #2c3e50; 
     transition: background-color 0.5s ease;
+    background-image: url("/static/prT.jpg");
 }
 
 /* Sidebar Styles */
@@ -46,7 +47,7 @@ body {
 }
 
 .link:hover {
-    color: #bdc3c7; /* Light gray for hover effect */
+    color: #bdc3c7; 
 }
 
 /* Container Styles */
@@ -54,7 +55,7 @@ body {
     max-width: 1200px;
     margin: 50px auto;
     padding: 20px;
-    background: #ffffff; /* Crisp white background */
+    background: rgba(241, 236, 236, 0.7); 
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin-left: 220px;
@@ -67,7 +68,7 @@ body {
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #2980b9; /* Bright blue */
+    color: #2980b9; 
     animation: slideInFromTop 0.5s ease-out;
 }
 
@@ -76,7 +77,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background-color: #ecf0f1; /* Light gray */
+    background-color: #ecf0f1; 
     border: 1px solid #bdc3c7;
 }
 
@@ -88,25 +89,25 @@ th, td {
 }
 
 th {
-    background-color: #2980b9; /* Bright blue */
+    background-color: #2980b9; 
     color: white;
 }
 
 td.dynamic-data {
-    color: #34495e; /* Darker blue-gray */
+    color: #34495e; 
 }
 
 tr:nth-child(even) {
-    background-color: #d6eaf8; /* Light blue */
+    background-color: #d6eaf8; 
 }
 
 tr:nth-child(odd) {
-    background-color: #ebf5fb; /* Softer light blue */
+    background-color: #ebf5fb; 
 }
 
 tr:hover {
-    background-color: #85c1e9; /* Medium light blue for hover */
-    transform: scale(1.01); /* Slight hover scaling effect */
+    background-color: #85c1e9; 
+    transform: scale(1.01); 
 }
 
 /* AddBox Button Styles */
@@ -122,8 +123,8 @@ tr:hover {
 
 .addBox:hover {
     text-decoration: underline;
-    background-color: #2471a3; /* Darker blue */
-    transform: scale(1.1); /* Slightly larger on hover */
+    background-color: #2471a3; 
+    transform: scale(1.1); 
 }
 
 /* General Button Styles */
@@ -153,7 +154,7 @@ button {
 .delete-btn {
     display: inline-block;
     margin-right: 10px;
-    background-color: #d62828; /* Red for delete */
+    background-color: #d62828; 
     color: white;
     border: none;
     padding: 8px 12px;
@@ -164,11 +165,11 @@ button {
 
 /* Hover Effect for Buttons */
 a.edit-btn:hover {
-    background-color: #0d7b80; /* Darker teal for edit hover */
+    background-color: #0d7b80; 
 }
 
 a.delete-btn:hover {
-    background-color: #b71f1f; /* Darker red for delete hover */
+    background-color: #b71f1f; 
 }
 
 /* Keyframe Animations */
@@ -218,4 +219,71 @@ a.delete-btn:hover {
     color: #34495e;
     z-index: 1;
     animation: slideInFromTop 0.6s ease-out;
+}
+
+
+/* Search Container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f4f6f7; 
+    border: 2px solid #2980b9; 
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+/* Search Box Input */
+.search-box {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #bdc3c7; 
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    margin-right: 10px; /* Space between input and button */
+    width: 300px;
+
+}
+
+.search-box:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 8px rgba(41, 128, 185, 0.5); 
+}
+
+/* Search Button */
+.search-icon {
+    padding: 10px 20px;
+    background-color: #2980b9; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-icon:hover {
+    background-color: #2471a3; 
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+.search-icon:active {
+    background-color: #1b4f72; 
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column; /* Stack input and button vertically */
+    }
+
+    .search-box {
+        margin-right: 0; /* Remove margin between input and button */
+        margin-bottom: 10px; /* Add space below input */
+    }
 }

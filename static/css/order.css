@@ -6,6 +6,7 @@ body {
     background-color: #fff5e6; /* Light peach background */
     color: #4d2600; /* Dark brown text */
     animation: fadeIn 1s ease-in-out;
+    background-image: url("/static/orT.jpg");
 }
 
 /* Sidebar Styles */
@@ -54,7 +55,7 @@ body {
     max-width: 1200px;
     margin: 50px auto;
     padding: 20px;
-    background: #ffffff; /* White for contrast */
+    background: rgba(241, 236, 236, 0.7); 
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin-left: 220px;
@@ -66,7 +67,7 @@ body {
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #e65c00; /* Vibrant burnt orange */
+    color: #e65c00; 
 }
 
 /* Table Styles */
@@ -74,7 +75,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background-color: #ffe6cc; /* Light orange background */
+    background-color: #ffe6cc;
     border: 1px solid #ff8c42;
     animation: tableLoad 0.8s ease-in-out;
 }
@@ -86,24 +87,24 @@ th, td {
 }
 
 th {
-    background-color: #ff8c42; /* Matches sidebar */
+    background-color: #ff8c42; 
     color: white;
 }
 
 td.dynamic-data {
-    color: #e65c00; /* Burnt orange for dynamic data */
+    color: #e65c00; 
 }
 
 tr:nth-child(even) {
-    background-color: #ffd9b3; /* Pale orange for alternating rows */
+    background-color: #ffd9b3; 
 }
 
 tr:nth-child(odd) {
-    background-color: #ffe6cc; /* Slightly darker light orange */
+    background-color: #ffe6cc; /
 }
 
 tr:hover {
-    background-color: #e67a2e; /* Sidebar hover color */
+    background-color: #e67a2e; 
     transition: background-color 0.3s ease-in-out;
 }
 
@@ -123,21 +124,21 @@ button:hover, .edit-btn:hover, .delete-btn:hover, .addBox:hover {
 }
 
 .edit-btn {
-    background-color: #ff944d; /* Light orange for edit */
+    background-color: #ff944d; 
     color: white;
 }
 
 .edit-btn:hover {
-    background-color: #cc5200; /* Darker burnt orange for edit hover */
+    background-color: #cc5200; 
 }
 
 .delete-btn {
-    background-color: #e65c00; /* Burnt orange for delete */
+    background-color: #e65c00; 
     color: white;
 }
 
 .delete-btn:hover {
-    background-color: #b34700; /* Darker shade for delete hover */
+    background-color: #b34700; 
 }
 
 .addBox {
@@ -204,5 +205,70 @@ button:hover, .edit-btn:hover, .delete-btn:hover, .addBox:hover {
     to {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f4f6f7; 
+    border: 2px solid #ff8c42;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+/* Search Box Input */
+.search-box {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #bdc3c7; 
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    margin-right: 10px; 
+    width: 300px;
+}
+
+.search-box:focus {
+    border-color: #ff8c42; 
+    box-shadow: 0 0 8px #ff8c42; 
+}
+
+/* Search Button */
+.search-icon {
+    padding: 10px 20px;
+    background-color: #ff8c42; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-icon:hover {
+    background-color: #ff8c42; 
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+.search-icon:active {
+    background-color: #ff8c42; 
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column; /* Stack input and button vertically */
+    }
+
+    .search-box {
+        margin-right: 0; /* Remove margin between input and button */
+        margin-bottom: 10px; /* Add space below input */
     }
 }

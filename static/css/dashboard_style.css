@@ -56,7 +56,7 @@ header {
 }
 
 .search-bar input:focus {
-    box-shadow: 0 0 10px rgba(255, 105, 135, 0.5); /* Highlight focus */
+    box-shadow: 0 0 10px rgba(255, 105, 135, 0.5); 
 }
 
 .profile img {
@@ -82,7 +82,7 @@ header {
     font-size: 1rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     animation: bounce 2s infinite;
-    transition: transform 0.3s ease-in-out; /* Smooth hover scaling */
+    transition: transform 0.3s ease-in-out; 
 }
 
 .card:hover {
@@ -145,7 +145,7 @@ header {
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+    transition: transform 0.3s ease-in-out; 
 }
 
 .table:hover {
@@ -176,7 +176,7 @@ header {
 }
 
 .table tr:hover td {
-    background-color: #ffebee; /* Subtle hover row effect */
+    background-color: #ffebee; 
 }
 
 .link {

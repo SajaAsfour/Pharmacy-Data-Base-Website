@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacist Order Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url("/static/report.jpg");
+
+        }
+
+        .chart-container {
+            width: 90%;
+            max-width: 800px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        canvas {
+            margin-top: 10px;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #006d77;
+            padding: 20px 0;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .sidebar li:hover {
+            background-color: #005f69;
+            transform: scale(1.1);
+        }
+
+        .link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            color: #c4e4e3;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <ul>
+            <li><a href="/dashboard" class="link">Dashboard</a></li>
+            <li><a href="/medicien" class="link">Medicine</a></li>
+            <li><a href="/users" class="link">Users</a></li>
+            <li><a href="/customer" class="link">Customer</a></li>
+            <li><a href="/orders" class="link">Orders</a></li>
+            <li><a href="/sales" class="link">Sales</a></li>
+            <li><a href="/reports" class="link">Reports</a></li>
+            <li><a href="/" class="link">LogOut</a></li>
+        </ul>
+    </div>
+
+    <div class="chart-container">
+        <h2>Pharmacist Orders</h2>
+        <div class="form-group">
+            <label for="reports">Choose an report to view</label>
+            <select id="reports" name="reports" required>
+                <option value="Report2">List all pharmacists and their total sales revenue, sorted by revenue in descending order</option>
+                <option value="Report1">Get total revenue per product and filter products generating more than 500 in revenue</option>
+                <option value="Report3">Find the top 3 customers with the highest total purchase amount</option>
+                <option value="Report4">Find products that are about to expire within the next 90 days and have a low quantity (<50) </option>
+                <option value="Report5">Retrieve the total quantity of products sold for each product type</option>
+                <option value="Report6">Identify the average and maximum wages of pharmacists grouped by their roles</option>
+                <option value="Report7">Retrieve the most frequently purchased product(s)</option>
+                <option value="Report8">Find the total quantity of products ordered by each pharmacist</option>
+                <option value="Report9">Retrieve the customers who purchased products priced above 50, grouped by city</option>
+                <option value="Report10">Calculate the reorder frequency of products and list products needing reorders (low stock <30)</option>
+                <option value="Report11">Identify the highest earning payment method</option>
+                <option value="Report12">Find products with no sales recorded yet</option>
+            </select>
+        </div>
+        <canvas id="orderChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        // Fetch data from the server
+        fetch('/get_chart8')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('orderChart').getContext('2d');
+
+                // Create the chart
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.pharmacistNames, // Pharmacist names for the x-axis
+                        datasets: [{
+                            label: 'Total Quantity Ordered',
+                            data: data.totalQuantitiesOrdered, // Total quantities ordered for the y-axis
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching chart data:', error));
+            document.getElementById('reports').addEventListener('change', function () {
+        const selectedValue = this.value;
+
+        // Define the mapping between options and URLs
+        const reportUrls = {
+            "Report1": "/reports",
+            "Report2": "/report2",
+            "Report3": "/report3",
+            "Report4": "/report4",
+            "Report5": "/report5",
+            "Report6": "/report6",
+            "Report7": "/report7",
+            "Report8": "/report8",
+            "Report9": "/report9",
+            "Report10": "/report10",
+            "Report11": "/report11",
+            "Report12": "/report12",
+        };
+
+        // Navigate to the corresponding page
+        if (reportUrls[selectedValue]) {
+            window.location.href = reportUrls[selectedValue];
+        }
+    });
+    </script>
+</body>
+
+</html>

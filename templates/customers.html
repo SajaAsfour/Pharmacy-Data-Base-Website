@@ -35,9 +35,21 @@
             {% endif %}
         </div>
 
-
+        
         <a href="/add_customers" class="addBox">Add New Customer  </a>
-
+        
+        <div class="search-container">
+            <form action="/customer" method="GET">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by Customer ID Or Name"
+                    class="search-box"
+                    value="{{ request.args.get('search', '') }}"
+                />
+                <button type="submit" class="search-icon">🔍</button>
+            </form>
+        </div>
         <!-- Table displaying records -->
         <div class="table-container">
             <table>

@@ -11,6 +11,19 @@
     <div class="container">
         <h1>Sales Information</h1>
         <a href="/sales" class="addBox">Return Back</a>
+
+        <div class="search-container">
+            <form action="/sale_archive" method="GET">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by Sales ID Or Date"
+                    class="search-box"
+                    value="{{ request.args.get('search', '') }}"
+                />
+                <button type="submit" class="search-icon">🔍</button>
+            </form>
+        </div>
         <!-- Table displaying records -->
         <div class="table-container">
             <table>

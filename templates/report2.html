@@ -1,20 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Revenue Chart</title>
+    <title>Pharmacist Revenue Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
         body {
             font-family: 'Times New Roman', Times, serif, sans-serif;
             background-color: #f4f4f4;
@@ -25,6 +16,7 @@
             align-items: center;
             height: 100vh;
             background-image: url("/static/report.jpg");
+
         }
 
         .chart-container {
@@ -71,13 +63,13 @@
             max-width: 1200px;
             margin: 50px auto;
             padding: 20px;
-            background: transparent;
-            /* This makes the background fully transparent */
+            background: rgba(241, 236, 236, 0.7);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             margin-left: 220px;
             position: relative;
             animation: fade-in 1.5s ease;
+            /* Fade-in effect */
         }
 
         @keyframes fade-in {
@@ -112,15 +104,21 @@
             padding: 0;
             margin: 0;
         }
-
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
         .form-group {
             margin-bottom: 20px;
             font-family: 'Times New Roman', Times, serif;
         }
     </style>
 </head>
-
 <body>
+    <h1>Pharmacist Revenue Chart</h1>
     <div class="sidebar">
         <ul>
             <li><a href="/dashboard" class="link">Dashboard</a></li>
@@ -137,22 +135,16 @@
         <div class="form-group">
             <label for="reports">Choose an report to view</label>
             <select id="reports" name="reports" required>
-                <option value="Report1">Get total revenue per product and filter products generating more than 500 in
-                    revenue</option>
-                <option value="Report2">List all pharmacists and their total sales revenue, sorted by revenue in
-                    descending order</option>
+                <option value="Report2">List all pharmacists and their total sales revenue, sorted by revenue in descending order</option>
+                <option value="Report1">Get total revenue per product and filter products generating more than 500 in revenue</option>
                 <option value="Report3">Find the top 3 customers with the highest total purchase amount</option>
-                <option value="Report4">Find products that are about to expire within the next 90 days and have a low
-                    quantity (<50) </option>
+                <option value="Report4">Find products that are about to expire within the next 90 days and have a low quantity (<50) </option>
                 <option value="Report5">Retrieve the total quantity of products sold for each product type</option>
-                <option value="Report6">Identify the average and maximum wages of pharmacists grouped by their roles
-                </option>
+                <option value="Report6">Identify the average and maximum wages of pharmacists grouped by their roles</option>
                 <option value="Report7">Retrieve the most frequently purchased product(s)</option>
                 <option value="Report8">Find the total quantity of products ordered by each pharmacist</option>
-                <option value="Report9">Retrieve the customers who purchased products priced above 50, grouped by city
-                </option>
-                <option value="Report10">Calculate the reorder frequency of products and list products needing reorders
-                    (low stock <30)< /option>
+                <option value="Report9">Retrieve the customers who purchased products priced above 50, grouped by city</option>
+                <option value="Report10">Calculate the reorder frequency of products and list products needing reorders (low stock <30)</option>
                 <option value="Report11">Identify the highest earning payment method</option>
                 <option value="Report12">Find products with no sales recorded yet</option>
             </select>
@@ -161,110 +153,64 @@
         <canvas id="revenueChart"></canvas>
     </div>
 
+    <canvas id="revenueChart" width="400" height="200"></canvas>
+
     <script>
-        // Fetch data from the Flask backend
-        fetch('/get_chart')
+        // Fetch data from the server
+        fetch('/get_chart1')
             .then(response => response.json())
             .then(data => {
-                // Generate an array of colors for each product
-                const barColors = data.productNames.map((_, index) => {
-                    // Generate random pastel colors
-                    const r = Math.floor(Math.random() * 127) + 128;
-                    const g = Math.floor(Math.random() * 127) + 128;
-                    const b = Math.floor(Math.random() * 127) + 128;
-                    return `rgba(${r}, ${g}, ${b}, 0.8)`;
-                });
-
-                // Create the chart
                 const ctx = document.getElementById('revenueChart').getContext('2d');
-                const revenueChart = new Chart(ctx, {
+               
+                // Create the chart
+                new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: data.productNames, // Product Names from backend
+                        labels: data.pharmacistNames, // Pharmacist names for the x-axis
                         datasets: [{
                             label: 'Total Revenue',
-                            data: data.totalRevenue.map(value => parseFloat(value)), // Convert to numbers
-                            backgroundColor: barColors,
-                            borderColor: barColors.map(color => color.replace('0.8', '1')), // Darker border for each color
+                            data: data.totalRevenue, // Total revenue for the y-axis
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
                             borderWidth: 1
                         }]
                     },
                     options: {
                         responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false // Hide the legend
-                            },
-                            title: {
-                                display: true,
-                                text: 'Total Revenue per Product',
-                                color: '#333',
-                                font: {
-                                    size: 18,
-                                    weight: 'bold'
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        return `${context.raw.toLocaleString()}`; // Format tooltip as currency
-                                    }
-                                }
-                            }
-                        },
                         scales: {
-                            x: {
-                                ticks: {
-                                    color: '#555',
-                                    font: {
-                                        size: 12
-                                    }
-                                }
-                            },
                             y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: '#555',
-                                    font: {
-                                        size: 12
-                                    },
-                                    callback: function (value) {
-                                        return `${value.toLocaleString()}`; // Format as currency
-                                    }
-                                }
+                                beginAtZero: true
                             }
                         }
                     }
                 });
             })
             .catch(error => console.error('Error fetching chart data:', error));
+                    // Add event listener for dropdown change
+    document.getElementById('reports').addEventListener('change', function () {
+        const selectedValue = this.value;
 
-        // Add event listener for dropdown change
-        document.getElementById('reports').addEventListener('change', function () {
-            const selectedValue = this.value;
+        // Define the mapping between options and URLs
+        const reportUrls = {
+            "Report1": "/reports",
+            "Report2": "/report2",
+            "Report3": "/report3",
+            "Report4": "/report4",
+            "Report5": "/report5",
+            "Report6": "/report6",
+            "Report7": "/report7",
+            "Report8": "/report8",
+            "Report9": "/report9",
+            "Report10": "/report10",
+            "Report11": "/report11",
+            "Report12": "/report12",
+        };
 
-            // Define the mapping between options and URLs
-            const reportUrls = {
-                "Report1": "/reports",
-                "Report2": "/report2",
-                "Report3": "/report3",
-                "Report4": "/report4",
-                "Report5": "/report5",
-                "Report6": "/report6",
-                "Report7": "/report7",
-                "Report8": "/report8",
-                "Report9": "/report9",
-                "Report10": "/report10",
-                "Report11": "/report11",
-                "Report12": "/report12",
-            };
-
-            // Navigate to the corresponding page
-            if (reportUrls[selectedValue]) {
-                window.location.href = reportUrls[selectedValue];
-            }
-        });
+        // Navigate to the corresponding page
+        if (reportUrls[selectedValue]) {
+            window.location.href = reportUrls[selectedValue];
+        }
+    });
     </script>
 </body>
-
 </html>

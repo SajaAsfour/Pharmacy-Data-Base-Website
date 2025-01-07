@@ -24,7 +24,18 @@
     <div class="container">
         <h1>Orders Information</h1>
         <a href="/add_orders" class="addBox">Make New Order</a>
-
+        <div class="search-container">
+            <form action="/orders" method="GET">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by Order ID Or Date"
+                    class="search-box"
+                    value="{{ request.args.get('search', '') }}"
+                />
+                <button type="submit" class="search-icon">🔍</button>
+            </form>
+        </div>
         <!-- Table displaying records -->
         <div class="table-container">
             <table>
