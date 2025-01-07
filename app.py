@@ -731,6 +731,8 @@ def new_sale():
     return render_template('new_sale.html')
 
 # Route to process form submission
+from flask import render_template
+
 @app.route('/submit', methods=['POST'])
 def submit_sales():
     # Ensure that the pharmacist is logged in
@@ -762,12 +764,12 @@ def submit_sales():
             result = cursor.fetchone()
 
             if not result:
-                return f"Product ID {product_id} does not exist.", 400
+                return render_template('out_of_stock.html', message=f"Product ID {product_id} does not exist.")
 
             current_stock, description = result
 
             # Check if stock is sufficient
-            if quantity > current_stock:
+            if current_stock == 0:
                 # Find an alternative product with the same description
                 cursor.execute('''
                     SELECT ProductID, Name 
@@ -779,9 +781,21 @@ def submit_sales():
 
                 if alternative:
                     alternative_id, alternative_name = alternative
-                    return f"Product ID {product_id} is out of stock. Consider Product ID {alternative_id} ({alternative_name}) instead.", 400
+                    return render_template(
+                        'out_of_stock.html', 
+                        message=f"Product ID {product_id} is out of stock. Consider Product ID {alternative_id} ({alternative_name}) instead."
+                    )
                 else:
-                    return f"Product ID {product_id} is out of stock, and no alternatives are available.", 400
+                    return render_template(
+                        'out_of_stock.html', 
+                        message=f"Product ID {product_id} is out of stock, and no alternatives are available."
+                    )
+
+            elif quantity > current_stock:
+                return render_template(
+                    'out_of_stock.html', 
+                    message=f"Requested quantity for Product ID {product_id} exceeds available stock ({current_stock})."
+                )
 
             # Insert the sale record
             cursor.execute('''
