@@ -41,7 +41,7 @@ def login():
             session['Role'] =pharmacist['Role']
             session['pharmacist_name'] = pharmacist['Name']
             if pharmacist['Role'] == 'Senior Pharmacist':
-                return redirect(url_for('dashboard'))  # Redirect to a dashboard (create this route)
+                return redirect(url_for('dashboard'))  # Redirect to a dashboard 
             else:
                 return render_template('dashboard2.html', name=session['pharmacist_name'])
         else:
@@ -79,8 +79,7 @@ def dashboard():
         # Establish database connection
         connection = get_db_connection()
         cursor = connection.cursor()
-
-        # Query to count total customers
+        #total Pharmacistic
         cursor.execute("SELECT COUNT(*) FROM pharmacist where Role = 'Pharmacist'") 
         total_pharmacist = cursor.fetchone()[0]
 
@@ -97,7 +96,7 @@ def dashboard():
         connection = get_db_connection()
         cursor = connection.cursor()
         current_date = datetime.now().strftime("%Y-%m-%d")
-
+        #total sales of the day
         query="""
                 SELECT SUM(p.Price * s.Quantity) AS TotalRevenue 
                 FROM  product p ,  Sales s
@@ -120,7 +119,7 @@ def dashboard():
         # Establish database connection
         connection = get_db_connection()
         cursor = connection.cursor()
-
+        #total stock value
         cursor.execute("select SUM(p.Price * p.Quantity) AS TotalStockValue  FROM Product p") 
         TotalStockValue = cursor.fetchone()[0]
 
@@ -137,7 +136,7 @@ def dashboard():
         connection = get_db_connection()
         cursor = connection.cursor()
         current_date = datetime.now().strftime("%Y-%m-%d")
-
+        #Quantity of today sales
         query = """
         SELECT SUM(S.Quantity) AS TotalQuantitySold
         FROM Sales S
@@ -161,7 +160,7 @@ def dashboard():
         # Establish database connection
         connection = get_db_connection()
         cursor = connection.cursor()
-
+        #Profit of the day
         query = """
         WITH Revenue AS (
             SELECT 
@@ -208,7 +207,7 @@ def dashboard():
         connection = get_db_connection()
         cursor = connection.cursor()
         current_date = datetime.now().strftime("%Y-%m-%d")
-
+        #order price of today
         query = """
         SELECT SUM(o.Quantity * (p.Price * 0.9)) AS TotalOrderPrice
         FROM Orders o
@@ -234,7 +233,7 @@ def dashboard():
         connection = get_db_connection()
         cursor = connection.cursor()
         current_date = datetime.now().strftime("%Y-%m-%d")
-
+        #total orders today
         query = """
         select count(*) from orders where orderdate = %s
         """
@@ -256,7 +255,7 @@ def dashboard():
         # Establish database connection
         connection = get_db_connection()
         cursor = connection.cursor()
-
+        #todays orders
         query = 'SELECT P.Name, o.Quantity,  (o.Quantity * (p.Price * 0.9)) AS TotalPrice FROM Orders o JOIN Product p ON o.ProductID = p.ProductID where o.orderdate = %s'
         cursor.execute(query, (current_date,))
         orders = cursor.fetchall()
@@ -272,7 +271,7 @@ def dashboard():
         # Establish database connection
         connection = get_db_connection()
         cursor = connection.cursor()
-
+        #todays sales
         query = """
                 SELECT 
                 p.name AS pharmacist_name, 
@@ -512,7 +511,7 @@ def users():
    
     rows = cursor.fetchall()
 
-    # Calculate the first day of the current month in Python
+    # Calculate the first day of the current month 
     first_day_of_month = datetime.now().replace(month=1, day=1).strftime("%Y-%m-%d")
 
     # Query to get the top pharmacist by total sales
@@ -533,7 +532,7 @@ def users():
         LIMIT 1
     """
     cursor.execute(query, (first_day_of_month,))
-    topUser = cursor.fetchone()  # Use fetchone() since LIMIT 1 guarantees a single row
+    topUser = cursor.fetchone()  
 
     # Close connection
     cursor.close()
@@ -680,10 +679,10 @@ def customers():
     
     rows = cursor.fetchall()
 
-    # Calculate the first day of the current month in Python
+    # Calculate the first day of the current month 
     first_day_of_month = datetime.now().replace(month=1, day=1).strftime("%Y-%m-%d")
 
-    # Query to get the top pharmacist by total sales
+    # Query to get the top customer by total sales
     query = """
         SELECT 
             c.Name,
@@ -701,7 +700,7 @@ def customers():
         LIMIT 1
     """
     cursor.execute(query, (first_day_of_month,))
-    topCustomer = cursor.fetchone()  # Use fetchone() since LIMIT 1 guarantees a single row
+    topCustomer = cursor.fetchone()  
 
     # Close connection
     cursor.close()
@@ -1440,7 +1439,7 @@ def delete_sales2(id):
 @app.route('/get_chart')
 def get_chart_data():
     connection = get_db_connection()
-    # Query execution
+    #Get total revenue per product and filter products generating more than 500 in revenue
     query = """
     SELECT 
         P.Name AS ProductName, 
@@ -1471,7 +1470,7 @@ def get_chart_data():
 def get_chart_data1():
     connection = get_db_connection()
 
-    # Query execution
+    # List all pharmacists and their total sales revenue, sorted by revenue in descending order
     query = """
     SELECT 
         PH.Name AS PharmacistName, 
@@ -1508,7 +1507,7 @@ def report2():
 @app.route('/get_chart3')
 def get_chart_data3():
     connection = get_db_connection()
-    # Query execution
+    # Find the top 3 customers with the highest total purchase amount
     query = """
     SELECT 
         C.Name AS CustomerName, 
@@ -1549,7 +1548,7 @@ def report3():
 @app.route('/get_chart_data5')
 def get_chart_data5():
     connection = get_db_connection()
-    
+    #Retrieve the total quantity of products sold for each product type
     query = """
     SELECT 
         P.ProductType, 
@@ -1582,7 +1581,7 @@ def index():
 def get_chart_data7():
     connection = get_db_connection()
     
-    # Updated query execution
+    # Retrieve the most frequently purchased product(s)
     query = """
     SELECT 
         P.Name AS ProductName, 
@@ -1620,7 +1619,7 @@ def report7():
 def get_chart_data8():
     connection = get_db_connection()
     
-    # Updated query execution
+    # Find the total quantity of products ordered by each pharmacist
     query = """
     SELECT 
         PH.Name AS PharmacistName, 
@@ -1652,6 +1651,7 @@ def report8():
 @app.route('/get_chart11')
 def get_chart_data11():
     connection = get_db_connection()
+    #Identify the highest earning payment method
     query = """
     SELECT 
         PaymentMethod, 
@@ -1664,7 +1664,6 @@ def get_chart_data11():
         PaymentMethod
     ORDER BY 
         TotalRevenue DESC
-    LIMIT 1;
     """
     cursor = connection.cursor()
     cursor.execute(query)
@@ -1696,7 +1695,7 @@ def report4():
 
     current_date = datetime.now().strftime("%Y-%m-%d")
     
-    # SQL query to fetch the data
+    # Find products that are about to expire within the next 90 days and have a low quantity (<50) 
     query = '''
         SELECT 
             Name AS ProductName, 
@@ -1724,7 +1723,7 @@ def report10():
     cursor = connection.cursor(dictionary=True)
 
     
-    # SQL query to fetch the data
+    # Calculate the reorder frequency of products and list products needing reorders (low stock <30)
     query = '''
         SELECT 
         P.Name AS ProductName, 
@@ -1755,7 +1754,7 @@ def report6():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    # SQL query to fetch the data
+    # Identify the average and maximum wages of pharmacists grouped by their roles
     query = '''
         SELECT 
             Role, 
@@ -1782,7 +1781,7 @@ def report12():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    # SQL query to fetch the data
+    # Find products with no sales recorded yet
     query = '''
         SELECT 
         P.Name AS ProductName
@@ -1805,7 +1804,7 @@ def report12():
 
 @app.route('/report9')
 def customer_spending_by_city():
-    # SQL query
+    # Retrieve the customers who purchased products priced above 50, grouped by city
     query = """
         SELECT 
             C.city AS City, 
