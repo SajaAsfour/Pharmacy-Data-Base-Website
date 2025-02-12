@@ -35,5 +35,13 @@ This repository contains the **Pharmacy Management System**, a web-based applica
 - 🎓 Computer Engineering Student at Birzeit University
 - 🏠 GitHub: [SajaAsfour](https://github.com/SajaAsfour)
 
+**Fatima Dawabsheh**
+- 🎓 Computer Engineering Student at Birzeit University
+- 🏠 GitHub: [Fatima-Dawabsheh](https://github.com/Fatima-Dawabsheh)
+
+**Shahd Shreteh**
+- 🎓 Computer Engineering Student at Birzeit University
+- 🏠 GitHub: [ShahdShreteh](https://github.com/ShahdShreteh)
+
 ## 📜 License
 This repository is for educational purposes. Feel free to use and reference the work, but please give proper credit. 😊
